@@ -1,0 +1,76 @@
+<header class="p-2 bg-secondary-subtle header">
+  <div class="container">
+
+    <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-sm-start">
+      <a href="/" class="mb-2 mx-2 mb-lg-0 text-white text-decoration-none logo">
+        <img src="./static/bot_logo.jpg" class="img-fluid rounded-circle" style="width: 40px;" />
+      </a>
+
+      <ul class="nav col-12 col-sm-auto me-sm-auto mb-2 justify-content-center mb-sm-0 rounded-1 header_nav">
+        <li><a href="#" class="nav-link px-2 text-secondary ">
+            <span class="fs-6  text-dark-emphasis">
+              CatCat
+            </span>
+          </a></li>
+        <li><a href="#" class="nav-link px-2 text-success-emphasis">
+            <i class="bi bi-person-fill"></i>
+            <span class="users">Users</span>
+            <span id="users_count"></span>
+          </a></li>
+        <li>
+          <a href="#" class="nav-link px-2 text-danger-emphasis">
+            <i class="bi bi-people-fill"></i>
+            <span class="couples">Couples</span>
+            <span id="couples_count"></span>
+          </a>
+        </li>
+        <li>
+          <a href="#" class="nav-link px-2 text-warning-emphasis">
+            <i class="fa fa-users" aria-hidden="true"></i>
+            <span class="couples">Triples</span>
+            <span id="triples_count"></span>
+          </a>
+        </li>
+
+
+
+      </ul>
+
+
+
+
+
+      <div class="d-flex align-items-center justify-content-center">
+
+        <div class="d-flex align-items-center justify-content-center mx-2">
+          <button type="button" class="btn-grad-black btn-grad-black-liner m-1" id="add_triple_user_btn">
+            <i class="fa fa-users" aria-hidden="true"></i>
+          </button>
+          <button type="button" class="btn-grad-black btn-grad-black-liner m-1" id="disconnect_couple_btn">
+            <i class="fa fa-sign-out" aria-hidden="true"></i>
+          </button>
+        </div>
+     
+
+        <div class="d-flex align-items-center justify-content-center mx-2">
+          <button class="btn-grad-black btn-grad-black-liner m-1" type="button" id="toggle_game_modal_btn" disabled
+            data-bs-toggle="modal" data-bs-target="#games_modal">
+            <i class="bi bi-controller"></i>
+          </button>
+          <button class="btn-grad-black btn-grad-black-liner m-1" data-bs-toggle="modal" data-bs-target="#player_modal"
+            id="player_modal_toggle_btn">
+            <i class="bi bi-music-note-beamed"></i>
+          </button>
+          <button class="btn-grad-black btn-grad-black-liner m-1" type="button" data-bs-toggle="offcanvas"
+            data-bs-target="#profile_offcanvas" aria-controls="profile_offcanvas">
+            <i class="bi bi-person-square"></i>
+          </button>
+        </div>
+      </div>
+
+
+
+
+    </div>
+  </div>
+</header>

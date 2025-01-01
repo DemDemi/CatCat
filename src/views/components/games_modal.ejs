@@ -1,0 +1,64 @@
+<div class="modal fade" id="games_modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content rounded-1 games">
+            <div class="modal-header bg-black bg-gradient p-3 pt-2 pb-2">
+                <h1 class="modal-title fs-5">ჯეირანი</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="close_game_modal_btn" style="display: none;"></button>
+            </div>
+
+            <div class="modal-body bg-secondary-subtle pt-1" style="height: 160px;">
+
+                <nav class="d-flex align-items-center justify-content-center">
+                    <div class="nav nav-tabs" id="nav-jeirani" role="tablist">
+
+                        <button class="nav-link active rounded-0 text-light-emphasis" id="nav-jeidani-tab"
+                            data-bs-toggle="tab" data-bs-target="#nav-jeidani" type="button" role="tab"
+                            aria-controls="nav-jeidani" aria-selected="true">
+                            <i class="bi bi-controller"></i>
+                        </button>
+
+                        <button class="nav-link rounded-0 text-light-emphasis" id="nav-jeidani-desc-tab" data-bs-toggle="tab"
+                            data-bs-target="#nav-jeidani-desc" type="button" role="tab" aria-controls="nav-jeidani-desc"
+                            aria-selected="false">
+                            <i class="bi bi-info-circle"></i>
+                        </button>
+
+                    </div>
+                </nav>
+
+                <div class="tab-content" id="nav-jeiraniContent">
+
+                    <div class="tab-pane fade show active p-1" id="nav-jeidani" role="tabpanel"
+                        aria-labelledby="nav-jeidani-tab" tabindex="0">
+                        <div class="d-flex align-items-center justify-content-center">
+                            <% [1,2,3,4,5].forEach(i=> { %>
+                                <img 
+                                    src="./static/games/jeirani_<%= i %>.png"
+                                    class="jeirani-single m-1 img-fluid rounded-circle border-2 border border-black"
+                                    value="<%= i %>"
+                                    onclick="App_Controller.play_jeirani(this.getAttribute('value'))"
+                                />
+                                <% }) %>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade p-1" id="nav-jeidani-desc" role="tabpanel" aria-labelledby="nav-jeidani-desc-tab"
+                        tabindex="0">
+                        <div class="text-center mt-2">
+                            <h6>თქვენით მიხვდით რა რას უგებს <i class="bi bi-emoji-smile-upside-down"></i></h6>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="modal-footer bg-black bg-gradient p-3 pt-1 pb-1">
+                <button type="button" class="btn-grad-black btn-grad-black-liner" data-bs-dismiss="modal" id="end_jeirani_game_btn">
+                    <i class="bi bi-folder-minus"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+
+
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
+    <link rel="icon" type="image/png" href="./static/fav/android-chrome-512x512.png">
+    <meta name="keywords" content="Chat Date ჩატი გაცნობა პაემანი omegle chatroulette">
+    <meta property="og:title" content="CatChat - ჩვენთვის!">
+    <meta property="og:type" content="chat">
+    <meta property="og:image" content="<%= APP_URL %>/static/fav/android-chrome-512x512.png">
+    <meta property="og:url" content="<%= APP_URL %>">
+    <meta property="og:description" content="ქეთჩათი არის ჩათი წესიერი ხალხისთვის">
+
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CatChat</title>
+
+    <link rel="icon" type="image/x-icon" href="./static/fav.ico" sizes="16x16">
+    <link rel="icon" type="image/png" href="./static/fav/favicon-32x32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="./static/fav/favicon-32x32.png" sizes="92x92">
+
+    <link rel="icon" type="image/png" href="./static/fav/android-chrome-192x192.png" sizes="192x192">
+    <link rel="icon" type="image/png" href="./static/fav/android-chrome-512x512.png" sizes="512x512">
+
+    <link rel="stylesheet" href="bootstrap.min.css" />
+    <link rel="stylesheet" href="bootstrap-icons.min.css" />
+    <link rel="stylesheet" href="index.css" />
+    <link href="https://fonts.cdnfonts.com/css/bpg-arial" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+
+<body data-bs-theme="dark" class="bg-black">
+    <input type="hidden" id="ip_input" />
+    <input type="hidden" id="app_domain" value=<%=APP_DOMAIN %> >
+    <%- include('./partails/header.ejs') %>
+
+
+
+        <div class="container main-container mt-5">
+            <div class="scrollspy-message-box" id="message_box" style="display: none;">
+                
+            </div>
+
+            <div id="connect_block" style="display: none;">
+                <%- include('./components/connect.ejs') %>
+            </div>
+            <div id="loading_block" style="display: none;">
+                <%- include('./components/loading.ejs') %>
+            </div>
+            <div id="disconnect_block" style="display: none;">
+                <%- include('./components/disconnect.ejs') %>
+            </div>
+            <div id="profile_block" >
+                <%- include('./components/profile.ejs') %>
+            </div>        
+            <!-- modals -->
+            <%- include('./components/games_modal.ejs') %>
+            <%- include('./components/player_modal.ejs') %>
+        </div>
+        <%- include('./components/chat.ejs') %>
+
+            <script src="/socket.io/socket.io.js"></script>
+            <script>
+                var SOCKET = io();
+            </script>
+            <script src="index.js" text="javascript"></script>
+            <script src="bootstrap.bundle.min.js"></script>
+
+        
+</body>
+
+</html>
