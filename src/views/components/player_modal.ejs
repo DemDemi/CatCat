@@ -27,9 +27,6 @@
                     <!-- Inner list content !!! -->
                 </div>
 
-
-
-
                 <div id="music_collections_list">
                     <div class="row m-0 p-0">
                         <% music_collections.forEach(music_collection=> { %>
@@ -40,10 +37,22 @@
                                     <img src="<%= music_collection.poster_public_path %>" class="card-img-top"
                                         alt="...">
                                     <div class="card-body p-1">
-                                        <h6 class="d-flex align-items-center justify-content-center text-center m-1"
-                                            style="height: 35px;">
-                                            <%= music_collection.name %>
-                                        </h6>
+                                        <% if (music_collection.name == 'Demis') { %>
+                                            <div class="m-1" style="height: 35px;">
+                                                <div class="input-group input-group-sm">
+                                                    <input type="password" class="form-control mx-1" placeholder="Ps" id="demis_password">
+                                                    <span class="input-group-text bg-black bg-gradient">
+                                                        <i class="bi bi-lock"></i>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        <% } %>
+                                        <% if (music_collection.name != 'Demis') { %>
+                                            <h6 class="d-flex align-items-center justify-content-center text-center m-1" style="height: 35px;">
+                                                <%= music_collection.name %>
+                                            </h6>
+                                        <% } %>
+                                    
                                     </div>
                                 </div>
                             </div>

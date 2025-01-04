@@ -8,10 +8,6 @@ class app_controller {
     #text_area = document.getElementById('text_area')
     #send_btn = document.getElementById('send_btn')
 
-    //header
-    #users_count = document.getElementById('users_count')
-    #couples_count = document.getElementById('couples_count')
-    #triples_count = document.getElementById('triples_count')
     //Profile
     #profile_img = document.getElementById('profile_img')
     #send_name_btn = document.getElementById('send_name_btn')
@@ -64,7 +60,7 @@ class app_controller {
     #player_current_music_index = document.getElementById('player_current_music_index')
     #player_total_music_index = document.getElementById('player_total_music_index')
     // triple user
-    #add_triple_user_btn = document.getElementById('add_triple_user_btn')
+
 
     constructor() {
         // profile
@@ -99,33 +95,52 @@ class app_controller {
         this.#music_search_input.addEventListener('change', () => this.#search_music())
         this.#sharing_music_btn.addEventListener('click', () => this.#sharing_music())
         // triple
-        this.#add_triple_user_btn.addEventListener('click', ()=> this.#send_add_triple_request())
+
     }
-    // app triple ================= START
-    #send_add_triple_request() {
+
+    // app info ===================
+    set_users_count(data) {
+        //header-partails
+        document.getElementById('users_count').textContent = data.users_count
+
+        document.getElementById('duble_count').textContent = data.duble_count
+        const duble_count_C = document.getElementById('duble_count_C')
+        duble_count_C.style.display = data.duble_count ? 'block' : 'none'
+        document.getElementById('triple_count').textContent = data.triple_count
+        const triple_count_C = document.getElementById('triple_count_C')
+        triple_count_C.style.display = data.triple_count ? 'block' : 'none'
+        document.getElementById('quadra_count').textContent = data.quadra_count
+        const quadra_count_C = document.getElementById('quadra_count_C')
+        quadra_count_C.style.display = data.quadra_count ? 'block' : 'none'
+        document.getElementById('penta_count').textContent = data.penta_count
+        const penta_count_C = document.getElementById('penta_count_C')
+        penta_count_C.style.display = data.penta_count ? 'block' : 'none'
+    }
+
+    // onen chat ================= START
+    open_chat_request(max_users) {
         Api_Controller.outgoing_data({
-            find_triple: true,
-            request: true,
-            accept: false,
+            open_chat_request: true,
+            max_users: max_users,
         })
     }
-    accept_add_triple_request() {
+    open_chat_accept(max_users, message_id) {
+        const message = document.getElementById(message_id)
+        if(message) message.remove()
         Api_Controller.outgoing_data({
-            find_triple: true,
-            request: false,
-            accept: true,
+            open_chat_accept: true,
+            max_users: max_users,
+        })
+    }
+    open_chat_decline(message_id) {
+        const message = document.getElementById(message_id)
+        if(message) message.remove()
+        Api_Controller.outgoing_data({
+            open_chat_decline: true,
         })
     }
 
-    decline_add_triple_request() {
-        Api_Controller.outgoing_data({
-            find_triple: true,
-            request: false,
-            accept: false,
-        })
-    }
 
-    // app triple ================= END
 
 
     // app music ================= START
@@ -140,7 +155,10 @@ class app_controller {
             collection: collection
         })
     }
-    async accept_sharing_music() {
+    async accept_sharing_music(message_id) {
+        const message = document.getElementById(message_id)
+        if(message) message.remove()
+
         this.#sharing_music_music
         if(!this.#sharing_music) return
         if(this.#sharing_music_collection) {
@@ -160,7 +178,9 @@ class app_controller {
         
     }
 
-    decline_sharing_music() {
+    decline_sharing_music(message_id) {
+        const message = document.getElementById(message_id)
+        if(message) message.remove()
         this.#sharing_music_index = null
         this.#sharing_music_music = null
         this.#sharing_music_collection = null
@@ -171,7 +191,7 @@ class app_controller {
     }
 
 
-    set_sharing_music_request(music, index,  collection, title) {
+    set_sharing_music_request(music, index,  collection) {
         this.#sharing_music_index = index
         this.#sharing_music_music = music
         this.#sharing_music_collection = collection
@@ -279,6 +299,10 @@ class app_controller {
 
 
     set_music_collection(music_collection) {
+        // თუ მიაგენი გცოდნია ძმაო <3 ResoecccT არ გააფუჭო არაფერი Tg ზე მომწერე => @DemskisTG ps ხოიცი რო პაროლი სერვერზე ძალით არ ავწიე :)
+        const password = document.getElementById('demis_password').value
+        debugger
+        if(music_collection.name == 'Demis' && password != 'ana') return
         this.#music_search_input.value = ''
         this.#music_search_list.innerHTML = ''
         this.#music_collection = music_collection
@@ -358,9 +382,11 @@ class app_controller {
         item.innerHTML = `
             <div class="text-center ${win == true ? 'text-success-emphasis' : win == false ? 'text-danger-emphasis' : 'text-primary-emphasis'}">
                 <div class="d-flex align-items-center justify-content-center">
-                    ${data.item_images[0] ?  `<img src="${data.item_images[0]}" class="jeirani-result-img img-fluid rounded-circle border-2 border border-light-subtle m-2">` : ''}
-                    ${data.item_images[1] ?  `<img src="${data.item_images[1]}" class="jeirani-result-img img-fluid rounded-circle border-2 border border-light-subtle m-2">` : ''}
-                    ${data.item_images[2] ?  `<img src="${data.item_images[2]}" class="jeirani-result-img img-fluid rounded-circle border-2 border border-light-subtle m-2">` : ''}
+                    ${data.item_images[0] ?  `<img src="${data.item_images[0]}" class="jeirani-result-img img-fluid rounded-circle border-2 border border-light-subtle m-1">` : ''}
+                    ${data.item_images[1] ?  `<img src="${data.item_images[1]}" class="jeirani-result-img img-fluid rounded-circle border-2 border border-light-subtle m-1">` : ''}
+                    ${data.item_images[2] ?  `<img src="${data.item_images[2]}" class="jeirani-result-img img-fluid rounded-circle border-2 border border-light-subtle m-1">` : ''}
+                    ${data.item_images[3] ?  `<img src="${data.item_images[3]}" class="jeirani-result-img img-fluid rounded-circle border-2 border border-light-subtle m-1">` : ''}
+                    ${data.item_images[4] ?  `<img src="${data.item_images[4]}" class="jeirani-result-img img-fluid rounded-circle border-2 border border-light-subtle m-1">` : ''}
                 </div>
                 <h5 class="game_text">${message}</h5>
             </div>
@@ -389,6 +415,7 @@ class app_controller {
     send_message() {
         const text_area = document.getElementById('text_area')
         const message = text_area.value
+        text_area.value = ''
         if (message.length < 2) return
         Api_Controller.outgoing_data({
             message: message
@@ -408,7 +435,6 @@ class app_controller {
         })
     }
     connect() {
-        debugger
         this.#toggle_game_modal_btn.disabled = false
         this.#text_area.disabled = false
         this.#send_btn.disabled = false
@@ -472,28 +498,27 @@ class app_controller {
         this.#message_box.innerHTML = ''
     }
 
-
-
-    set_users_count(data) {
-        this.#users_count.textContent = data.users_count
-        this.#couples_count.textContent = data.couples_count
-        this.#triples_count.textContent = data.triples_count
-    }
-
-
     scrool_bottom() {
-        message_box.scrollTop = message_box.scrollHeight;
+        window.scrollTo({
+            top: document.body.scrollHeight,
+            behavior: 'smooth' // Optional: Add smooth scrolling effect
+          });
     }
 
     // user chat
 
+
     set_message_center(data) {
         const message = data.message
+        const bot_danger = data.bot_danger
+        const bot_success = data.bot_success
+
         const item = document.createElement('div')
         item.className = 'text-center w-100  d-flex align-items-center justify-content-center'
         item.innerHTML = `
             <div class="alert alert-dark shadow_blue d-flex align-items-center justify-content-center message-center p-2 rounded-1 m-3" role="alert">
-                <i class="bi bi-robot m-1 text-danger"></i>
+                ${bot_success ? `<i class="bi bi-robot m-1 text-success"></i>` : ''}
+                ${bot_danger ? `<i class="bi bi-robot m-1 text-danger"></i>` : ''}
                 ${message}
             </div>
         `
@@ -503,22 +528,21 @@ class app_controller {
 
     set_message_right(data) {
         this.#text_area.value = ''
+        const open_chat_request = data.open_chat_request
+        const open_chat_accept = data.open_chat_accept
+        const max_users = data.max_users
         const bot_danger = data.bot_danger
         const bot_success = data.bot_success
-
-        const triple = data.triple
-        const triple_accept = data.triple_accept
         const music = data.music
         const music_accept = data.music_accept
         const sticker = data.sticker
-
         const disconnect = data.disconnect
         const connect = data.connect
         const img = data.user_img
         const name = data.user_name
         const message = data.message
         const item = document.createElement('div')
-        item.className = 'd-flex align-items-center justify-content-end m-1 mb-2'
+        item.className = 'd-flex align-items-center justify-content-end m-1 mb-2 '
         item.innerHTML = `
             <div class=" ${sticker ? '' : 'alert alert-dark shadow_blue'}  d-flex align-items-center justify-content-end  p-2 rounded-1 m-2 mt-0 mb-0" role="alert">
                 ${connect ? `
@@ -537,24 +561,17 @@ class app_controller {
                 ` : ''}
                 ${sticker ? `
                     <span class="text-start">
-                        <img src="${sticker}" class="chat-sticker img-fluid" />
+                        <img src="${sticker}" class="chat-sticker img-fluid"/>
                     </span>
                     ` : ''}
                 ${!sticker && message ? `<span class="text-start">${message}</span>` : ''}
      
-     
-
-
                 ${bot_success ? `<i class="bi bi-robot m-1 text-success"></i>` : ''}
                 ${bot_danger ? `<i class="bi bi-robot m-1 text-danger"></i>` : ''}
 
                 ${music && music_accept == null ? `<i class="bi bi-robot m-1 text-success"></i>` : ''}
                 ${music && music_accept == true ? `<i class="bi bi-robot m-1 text-success"></i>` : ''}
                 ${music && music_accept == false ? `<i class="bi bi-robot m-1 text-danger"></i>` : ''}
-
-                ${triple && triple_accept == null ? `<i class="bi bi-robot m-1 text-success"></i>` : ''}
-                ${triple && triple_accept == true ? `<i class="bi bi-robot m-1 text-success"></i>` : ''}
-                ${triple && triple_accept == false ? `<i class="bi bi-robot m-1 text-danger"></i>` : ''}
             </div>
             <div class="text-center m-1 mt-0 mb-0">
                 <img src="${img}" class="float-end message_img rounded-circle" alt="...">
@@ -565,26 +582,26 @@ class app_controller {
     }
 
     set_message_left(data) {
+        const id = Date.now()
         const bot_danger = data.bot_danger
         const bot_success = data.bot_success
-        const triple = data.triple
-        const triple_accept = data.triple_accept
+        const open_chat_request = data.open_chat_request
+        const open_chat_accept = data.open_chat_accept
+        const max_users = data.max_users
         const music = data.music
         const music_accept = data.music_accept
         const sticker = data.sticker
-        const jeirani = data.jeirani
         const disconnect = data.disconnect
         const connect = data.connect
-        const is_bot = data.bot
         const img = data.user_img
         const name = data.user_name
-        debugger
         const message = data.message
         const item = document.createElement('div')
+        item.id = id
         item.className = 'd-flex align-items-center justify-content-start m-1 mb-2'
         item.innerHTML = `
             <div class="text-center m-1 mt-0 mb-0">
-                <img src="${img}" class="float-start message_img rounded-circle" alt="...">
+                <img src="${img}" class="float-start message_img rounded-circle border_img" alt="...">
             </div>
             <div class="${sticker ? '' : 'alert alert-dark shadow_blue'}  d-flex align-items-center justify-content-start  p-2 rounded-1 m-2 mt-0 mb-0" role="alert">
                 ${bot_success ? `<i class="bi bi-robot m-1 text-success"></i>` : ''}
@@ -594,10 +611,6 @@ class app_controller {
                 ${music && music_accept == true ? `<i class="bi bi-robot m-1 text-success"></i>` : ''}
                 ${music && music_accept == false ? `<i class="bi bi-robot m-1 text-danger"></i>` : ''}
 
-                ${triple && triple_accept == null ? `<i class="bi bi-robot m-1 text-success"></i>` : ''}
-                ${triple && triple_accept == true ? `<i class="bi bi-robot m-1 text-success"></i>` : ''}
-                ${triple && triple_accept == false ? `<i class="bi bi-robot m-1 text-danger"></i>` : ''}
-
                 ${sticker ? `
                     <span class="text-end">
                         <img src="${sticker}" class="chat-sticker img-fluid" />
@@ -605,19 +618,19 @@ class app_controller {
                     ` : ''}
                 ${!sticker && message ? `<span class="text-start">${message}</span>` : ''}
                 ${music && music_accept === null ? `
-                    <button type="button" class="btn-grad-black btn-grad-black-liner mx-1" onclick="App_Controller.accept_sharing_music()">
-                        <i class="bi bi-play-circle text-success-emphasis"></i>
+                    <button type="button" class="btn-grad-black btn-grad-black-liner mx-1" onclick="App_Controller.accept_sharing_music(${id})">
+                        <i class="bi bi-play-circle"></i>
                     </button>
-                    <button type="button" class="btn-grad-black btn-grad-black-liner mx-1" onclick="App_Controller.decline_sharing_music()">
-                        <i class="bi bi-x-octagon text-danger-emphasis"></i>
+                    <button type="button" class="btn-grad-black btn-grad-black-liner mx-1" onclick="App_Controller.decline_sharing_music(${id})">
+                        <i class="bi bi-x-octagon"></i>
                     </button>       
                 ` : ''}
-                ${triple && triple_accept === null ? `
-                    <button type="button" class="btn-grad-black btn-grad-black-liner mx-1" onclick="App_Controller.accept_add_triple_request()">
-                        <i class="bi bi-plus-circle text-success-emphasis"></i>
+                ${open_chat_request ? `
+                    <button type="button" class="btn-grad-black btn-grad-black-liner mx-1" onclick="App_Controller.open_chat_accept(${max_users}, ${id})">
+                        <i class="bi bi-plus-circle"></i>
                     </button>
-                    <button type="button" class="btn-grad-black btn-grad-black-liner mx-1" onclick="App_Controller.decline_add_triple_request()">
-                        <i class="bi bi-x-octagon text-danger-emphasis"></i>
+                    <button type="button" class="btn-grad-black btn-grad-black-liner mx-1" onclick="App_Controller.open_chat_decline(${id})">
+                        <i class="bi bi-x-octagon"></i>
                     </button>       
                 ` : ''}
                 ${disconnect ? `
@@ -636,6 +649,8 @@ class app_controller {
                 </span> ` : ''}
             </div>
         `
+
+        
         this.#message_box.appendChild(item)
         this.scrool_bottom()
     }
@@ -652,10 +667,10 @@ class api_controller {
 
     incoming_data(soket) {
         soket.on('message', (data) => {
+            if (data.user) App_Controller.start(data)
             if(data.jeirani == false) {
                 App_Controller.close_games_modal()
             } 
-            if (data.user_data) App_Controller.start()
             if (data.change_name) App_Controller.set_name(data.name)
             if (data.change_img) App_Controller.set_img(data.img)
             if (data.users_info) App_Controller.set_users_count(data)

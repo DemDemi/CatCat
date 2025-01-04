@@ -9,6 +9,11 @@ p,
 small {
     padding: 0px;
     margin: 0px;
+    font-family: 'BPG Arial', sans-serif !important;
+}
+
+.users-icon {
+    height: 15px;
 }
 
 .manc_blue {
@@ -63,6 +68,20 @@ small {
 /* =====================================> sticker styles end */
 
 
+.border-grad {
+    padding: 15px;
+    content: '';
+    background: url("./static/red.png") repeat;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-color: #98989810;
+    z-index: 100;
+  }
+
+
+
+
 .notification i {
     font-size: 20px;
 }
@@ -107,42 +126,16 @@ small {
     max-width: 150px;
 }
 
-
-div {
-    font-family: 'BPG Arial', sans-serif !important;
-}
-
 p {
     margin: 0;
 }
 
-.scrollspy-message-box {
-    height: calc(100vh - 194px);
-    position: relative;
-    overflow: auto;
-}
 
 .scrollspy-playlist-box {
-    max-height: calc(100vh - 250px);
-    min-height: 400px;
+    max-height: calc(100vh - 300px);
+    min-height: 410px;
     position: relative;
     overflow: auto;
-}
-
-
-.main-container {
-    margin-top: 20px;
-}
-
-
-.jeirani-result-img {
-    max-height: 70px;
-    max-width: 70px;
-}
-
-.jeirani-single {
-    max-height: 70px;
-    max-width: 70px;
 }
 
 .jeirani-single:hover {
@@ -242,10 +235,47 @@ textarea {
     border-right: none !important;
 }
 
+.jeirani-result-img {
+    max-height: 70px;
+    max-width: 70px;
+}
+
+.jeirani-single {
+    max-height: 70px;
+    max-width: 70px;
+}
 
 
+.shadow_blue {
+    -webkit-box-shadow: 0px 2px 6px -3px rgba(80, 114, 167, 1);
+    -moz-box-shadow: 0px 2px 6px -3px rgba(80, 114, 167, 1);
+    box-shadow: 0px 2px 6px -3px rgba(80, 114, 167, 1);
+}
+
+
+.scrollspy-message-box {
+    height: calc(100vh - 140px);
+    position: relative;
+    overflow: auto;
+}
+
+
+.main-container {
+    margin-top: 90px;
+    margin-bottom: 100px;
+}
+
+.alert-dark {
+    background-color: #1a1d205e;
+}
 
 @media only screen and (max-width: 575px) {
+    .main-container {
+        margin-top: 150px;
+    }    
+    .scrollspy-message-box {
+        height: calc(100vh - 190px);
+    }
     .games .jeirani-single {
         max-height: 50px;
         max-width: 50px;
@@ -267,13 +297,9 @@ textarea {
         display: block;
     }
 
-    .main-container {
-        margin-top: 5px !important;
-    }
-
     div,
     h5,
-    h6 button,
+    h6, button,
     .game_text {
         font-size: 17px !important;
     }
@@ -281,16 +307,16 @@ textarea {
 }
 
 
-.shadow_blue {
-    -webkit-box-shadow: 0px 2px 6px -3px rgba(80, 114, 167, 1);
-    -moz-box-shadow: 0px 2px 6px -3px rgba(80, 114, 167, 1);
-    box-shadow: 0px 2px 6px -3px rgba(80, 114, 167, 1);
-}
-
 @media only screen and (max-width: 768px) {
+    
+
     .games .jeirani-single {
         max-height: 55px;
         max-width: 55px;
+    }
+    .jeirani-result-img {
+        max-height: 35px;
+        max-width: 35px;
     }
 
     .chat-sticker {
@@ -323,6 +349,10 @@ textarea {
     .games .jeirani-single {
         max-height: 60px;
         max-width: 60px;
+    }
+    .jeirani-result-img {
+        max-height: 55px;
+        max-width: 55px;
     }
 
     .chat-sticker {
