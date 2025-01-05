@@ -43,7 +43,7 @@ class Spam_Service {
             const message_insert = await page.evaluate(() => {
                 const text_area = document.getElementById('message')
                 if (!text_area) resolve(false)
-                text_area.value = 'zdzd'
+                text_area.value = 'https://catcat.ge  გადმოთ ჩათსი <3'
                 return true
             })
             if (message_insert) {
