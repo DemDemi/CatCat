@@ -20,6 +20,7 @@
     "express-fileupload": "^1.5.1",
     "mongoose": "^8.8.2",
     "nodemon": "^3.1.7",
+    "puppeteer": "^23.11.1",
     "socket.io": "^4.8.1"
   }
 }

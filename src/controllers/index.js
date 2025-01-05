@@ -5,9 +5,10 @@ class index_controller {
 
     async index(req, res) {
 
-        const stickers = await Stickers_Controller.get_stickers()
+        const passcode = req.query.u
+        const stickers = await Stickers_Controller.get_stickers(passcode)
         const music_collections = await Music_Service.get_collections()
-    
+        
         const APP_DOMAIN = process.env.HOST + process.env.PORT
         const APP_URL = process.env.APP_URL
         res.render('index', {
@@ -17,6 +18,8 @@ class index_controller {
             APP_URL
         })
     }
+
+
 
 }
 
