@@ -394,7 +394,7 @@ class Users_Service {
                 if (!user) return
 
                 let is_pidarasti = false
-                if(data.message) {
+                if(data.message && data.message != true) {
                     if(data.message.includes('გეი')) is_pidarasti = true
                     if(data.message.includes('gei')) is_pidarasti = true
                     if(data.message.includes('pasi var')) is_pidarasti = true
