@@ -394,7 +394,7 @@ class Users_Service {
                 if (!user) return
 
                 let is_pidarasti = false
-<<<<<<< HEAD
+
                 if (data.message && data.message != true) {
                     if (data.message.includes('გეი')) is_pidarasti = true
                     if (data.message.includes('gei')) is_pidarasti = true
@@ -402,15 +402,6 @@ class Users_Service {
                     if (data.message.includes('პასი ვარ')) is_pidarasti = true
                     if (data.message.includes('mogiwov')) is_pidarasti = true
                     if (data.message.includes('მოგიწოვ')) is_pidarasti = true
-=======
-                if(data.message && data.message != true) {
-                    if(data.message.includes('გეი')) is_pidarasti = true
-                    if(data.message.includes('gei')) is_pidarasti = true
-                    if(data.message.includes('pasi var')) is_pidarasti = true
-                    if(data.message.includes('პასი ვარ')) is_pidarasti = true
-                    if(data.message.includes('mogiwov')) is_pidarasti = true
-                    if(data.message.includes('მოგიწოვ')) is_pidarasti = true
->>>>>>> b00efb798ea3e7c63414ca31b9e2dcf66274f5e2
                 }
 
                 const message = new Message({
