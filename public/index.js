@@ -38,7 +38,7 @@ class app_controller {
 
     #music_modal_player = document.getElementById('music_modal_player')
     #music_modal_player_box = document.getElementById('music_modal_player_box')
-        // app music state !! ==============>
+    // app music state !! ==============>
     #current_music_index = null
     #current_music = null
     #music_collection = null
@@ -47,7 +47,7 @@ class app_controller {
     #sharing_music_index = null
     #sharing_music_music = null
     #sharing_music_collection = null
-    
+
     #play_next_music_btn = document.getElementById('play_next_music_btn')
     #play_previous_music_btn = document.getElementById('play_previous_music_btn')
     #mix_music_btn = document.getElementById('mix_music_btn')
@@ -71,7 +71,7 @@ class app_controller {
         this.#find_couple_btn.addEventListener('click', () => this.#find_couple())
         this.#next_couple_btn.addEventListener('click', () => this.#find_couple())
         this.#disconnect_couple_btn.addEventListener('click', () => this.disconnect())
-   
+
 
         this.#text_area.onkeyup = function (e) {
             if (e.keyCode === 13) {
@@ -126,7 +126,7 @@ class app_controller {
     }
     open_chat_accept(max_users, message_id) {
         const message = document.getElementById(message_id)
-        if(message) message.remove()
+        if (message) message.remove()
         Api_Controller.outgoing_data({
             open_chat_accept: true,
             max_users: max_users,
@@ -134,7 +134,7 @@ class app_controller {
     }
     open_chat_decline(message_id) {
         const message = document.getElementById(message_id)
-        if(message) message.remove()
+        if (message) message.remove()
         Api_Controller.outgoing_data({
             open_chat_decline: true,
         })
@@ -146,7 +146,7 @@ class app_controller {
     // app music ================= START
     #sharing_music() {
         const music = this.#current_music
-        if(!music) return
+        if (!music) return
         const collection = this.#music_collection
         Api_Controller.outgoing_data({
             sharing_music: true,
@@ -157,17 +157,17 @@ class app_controller {
     }
     async accept_sharing_music(message_id) {
         const message = document.getElementById(message_id)
-        if(message) message.remove()
+        if (message) message.remove()
 
         this.#sharing_music_music
-        if(!this.#sharing_music) return
-        if(this.#sharing_music_collection) {
+        if (!this.#sharing_music) return
+        if (this.#sharing_music_collection) {
             this.set_music_collection(this.#sharing_music_collection)
-        }  else {
+        } else {
             this.set_search_music([this.#sharing_music_music])
         }
         this.#close_player_modal_btn.click()
-        setTimeout( ()=> {
+        setTimeout(() => {
             this.#player_modal_toggle_btn.click()
             this.play_music(this.#sharing_music_music, this.#sharing_music_index)
             Api_Controller.outgoing_data({
@@ -175,12 +175,12 @@ class app_controller {
                 accept: true
             })
         }, 500)
-        
+
     }
 
     decline_sharing_music(message_id) {
         const message = document.getElementById(message_id)
-        if(message) message.remove()
+        if (message) message.remove()
         this.#sharing_music_index = null
         this.#sharing_music_music = null
         this.#sharing_music_collection = null
@@ -191,7 +191,7 @@ class app_controller {
     }
 
 
-    set_sharing_music_request(music, index,  collection) {
+    set_sharing_music_request(music, index, collection) {
         this.#sharing_music_index = index
         this.#sharing_music_music = music
         this.#sharing_music_collection = collection
@@ -199,7 +199,7 @@ class app_controller {
 
     #search_music() {
         const query = this.#music_search_input.value
-        if(query.length == 0 ) return
+        if (query.length == 0) return
         Api_Controller.outgoing_data({
             search_music: true,
             query: query
@@ -218,7 +218,7 @@ class app_controller {
             const item = this.#get_music_item(music)
             this.#music_search_list.appendChild(item)
         });
-        if(musics.length == 0) {
+        if (musics.length == 0) {
 
         }
 
@@ -239,12 +239,12 @@ class app_controller {
         this.#music_modal_player_box.style.display = 'none'
         this.#music_modal_player.src = ''
     }
-    
+
     #play_mix_music() {
-        if(!this.#music_collection) return
+        if (!this.#music_collection) return
         let index = this.#get_randon_int(this.#music_collection.collection.length)
         let music = this.#music_collection.collection[index]
-        if(music) this.play_music(music, index)
+        if (music) this.play_music(music, index)
     }
 
     #get_randon_int(max) {
@@ -252,15 +252,15 @@ class app_controller {
     }
 
     #play_next_music() {
-        if(this.#current_music_index == null) return
+        if (this.#current_music_index == null) return
         let next = this.#music_collection.collection[(this.#current_music_index + 1)]
-        if(next) this.play_music(next, (this.#current_music_index + 1))
+        if (next) this.play_music(next, (this.#current_music_index + 1))
     }
 
     #play_previous_music() {
-        if(this.#current_music_index == null) return
+        if (this.#current_music_index == null) return
         let previous = this.#music_collection.collection[(this.#current_music_index - 1)]
-        if(previous) this.play_music(previous, (this.#current_music_index - 1))
+        if (previous) this.play_music(previous, (this.#current_music_index - 1))
     }
 
     play_music(music, index) {
@@ -268,20 +268,20 @@ class app_controller {
         this.#current_music_index = index
         this.#music_modal_player_box.style.display = 'block'
         this.#music_modal_player.src = music.mp3_public_path
-        if(this.#music_collection) {
+        if (this.#music_collection) {
             this.#player_current_music_index.textContent = (index + 1)
             this.#player_total_music_index.textContent = this.#music_collection.collection.length
         } else {
             this.#player_current_music_index.textContent = ''
             this.#player_total_music_index.textContent = ''
         }
-   
-    
+
+
         this.#music_modal_player.play()
 
-        if(this.#current_music_id_path) {
+        if (this.#current_music_id_path) {
             const last_card_played = document.getElementById(this.#current_music_id_path)
-            if(last_card_played) {
+            if (last_card_played) {
                 last_card_played.style.display = 'none'
                 const last_card_player_music_name = document.getElementById(`${this.#current_music_id_path}_name`)
                 last_card_player_music_name.style.display = 'block'
@@ -289,7 +289,7 @@ class app_controller {
         }
         const card_played = document.getElementById(music.mp3_public_path)
         card_played.style.display = 'block'
-        this.#current_music_id_path  = music.mp3_public_path   
+        this.#current_music_id_path = music.mp3_public_path
     }
 
 
@@ -299,14 +299,10 @@ class app_controller {
 
 
     set_music_collection(music_collection) {
-        // თუ მიაგენი გცოდნია ძმაო <3 ResoecccT არ გააფუჭო არაფერი Tg ზე მომწერე => @DemskisTG ps ხოიცი რო პაროლი სერვერზე ძალით არ ავწიე :)
-        const password = document.getElementById('demis_password').value
-        debugger
-        if(music_collection.name == 'Demis' && password != 'ana') return
         this.#music_search_input.value = ''
         this.#music_search_list.innerHTML = ''
         this.#music_collection = music_collection
-        music_collection.collection.forEach( (music, index) => {
+        music_collection.collection.forEach((music, index) => {
             const item = this.#get_music_item(music, index)
             this.#music_collection_list.append(item)
         });
@@ -347,7 +343,7 @@ class app_controller {
         })
     }
 
-   
+
 
     // app music ================= END
 
@@ -382,11 +378,11 @@ class app_controller {
         item.innerHTML = `
             <div class="text-center ${win == true ? 'text-success-emphasis' : win == false ? 'text-danger-emphasis' : 'text-primary-emphasis'}">
                 <div class="d-flex align-items-center justify-content-center">
-                    ${data.item_images[0] ?  `<img src="${data.item_images[0]}" class="jeirani-result-img img-fluid rounded-circle border-2 border border-light-subtle m-1">` : ''}
-                    ${data.item_images[1] ?  `<img src="${data.item_images[1]}" class="jeirani-result-img img-fluid rounded-circle border-2 border border-light-subtle m-1">` : ''}
-                    ${data.item_images[2] ?  `<img src="${data.item_images[2]}" class="jeirani-result-img img-fluid rounded-circle border-2 border border-light-subtle m-1">` : ''}
-                    ${data.item_images[3] ?  `<img src="${data.item_images[3]}" class="jeirani-result-img img-fluid rounded-circle border-2 border border-light-subtle m-1">` : ''}
-                    ${data.item_images[4] ?  `<img src="${data.item_images[4]}" class="jeirani-result-img img-fluid rounded-circle border-2 border border-light-subtle m-1">` : ''}
+                    ${data.item_images[0] ? `<img src="${data.item_images[0]}" class="jeirani-result-img img-fluid rounded-circle border-2 border border-light-subtle m-1">` : ''}
+                    ${data.item_images[1] ? `<img src="${data.item_images[1]}" class="jeirani-result-img img-fluid rounded-circle border-2 border border-light-subtle m-1">` : ''}
+                    ${data.item_images[2] ? `<img src="${data.item_images[2]}" class="jeirani-result-img img-fluid rounded-circle border-2 border border-light-subtle m-1">` : ''}
+                    ${data.item_images[3] ? `<img src="${data.item_images[3]}" class="jeirani-result-img img-fluid rounded-circle border-2 border border-light-subtle m-1">` : ''}
+                    ${data.item_images[4] ? `<img src="${data.item_images[4]}" class="jeirani-result-img img-fluid rounded-circle border-2 border border-light-subtle m-1">` : ''}
                 </div>
                 <h5 class="game_text">${message}</h5>
             </div>
@@ -394,7 +390,7 @@ class app_controller {
         this.#message_box.appendChild(item)
         this.scrool_bottom()
     }
- 
+
 
     // app games ================= END
 
@@ -502,7 +498,7 @@ class app_controller {
         window.scrollTo({
             top: document.body.scrollHeight,
             behavior: 'smooth' // Optional: Add smooth scrolling effect
-          });
+        });
     }
 
     // user chat
@@ -527,6 +523,13 @@ class app_controller {
     }
 
     set_message_right(data) {
+        // user profile + vip
+        const img = data.user_img
+        const name = data.user_name
+        const message_styles = data.message_styles
+        const message_icon = data.message_icon
+        // message data
+        debugger
         this.#text_area.value = ''
         const open_chat_request = data.open_chat_request
         const open_chat_accept = data.open_chat_accept
@@ -538,13 +541,23 @@ class app_controller {
         const sticker = data.sticker
         const disconnect = data.disconnect
         const connect = data.connect
-        const img = data.user_img
-        const name = data.user_name
+
         const message = data.message
         const item = document.createElement('div')
         item.className = 'd-flex align-items-center justify-content-end m-1 mb-2 '
         item.innerHTML = `
-            <div class=" ${sticker ? '' : 'alert alert-dark shadow_blue'}  d-flex align-items-center justify-content-end  p-2 rounded-1 m-2 mt-0 mb-0" role="alert">
+            <div 
+                class=" ${sticker ? '' : 'alert alert-dark shadow_blue'}  d-flex align-items-center justify-content-end  p-2 rounded-1 m-2 mt-0 mb-0" 
+                style='${sticker ? '' : message_styles}'
+                role="alert"
+            >
+                ${message_icon ? `
+                    <span class="position-absolute top-0 start-50 translate-middle">
+                        <img  src='${message_icon}' class="message_icon ">
+                    </span>  
+                ` : ''}
+             
+
                 ${connect ? `
                     <span id="couple_name" class="m-2 mt-0 mb-0">
                         ${name ? name :
@@ -574,7 +587,11 @@ class app_controller {
                 ${music && music_accept == false ? `<i class="bi bi-robot m-1 text-danger"></i>` : ''}
             </div>
             <div class="text-center m-1 mt-0 mb-0">
-                <img src="${img}" class="float-end message_img rounded-circle" alt="...">
+                <img 
+                    src="${img}" 
+                    class="float-end message_img ${message_styles ? '' : 'rounded-circle'}" 
+                    alt="..."
+                >
             </div>
         `
         this.#message_box.appendChild(item)
@@ -582,6 +599,12 @@ class app_controller {
     }
 
     set_message_left(data) {
+        // user profile + vip
+        const img = data.user_img
+        const name = data.user_name
+        const message_styles = data.message_styles
+        const message_icon = data.message_icon
+        // message data
         const id = Date.now()
         const bot_danger = data.bot_danger
         const bot_success = data.bot_success
@@ -593,17 +616,28 @@ class app_controller {
         const sticker = data.sticker
         const disconnect = data.disconnect
         const connect = data.connect
-        const img = data.user_img
-        const name = data.user_name
         const message = data.message
         const item = document.createElement('div')
         item.id = id
         item.className = 'd-flex align-items-center justify-content-start m-1 mb-2'
         item.innerHTML = `
             <div class="text-center m-1 mt-0 mb-0">
-                <img src="${img}" class="float-start message_img rounded-circle border_img" alt="...">
+                <img 
+                    src="${img}" 
+                    class="float-start message_img ${message_styles ? '' : 'rounded-circle'}" 
+                    alt="..."
+                >
             </div>
-            <div class="${sticker ? '' : 'alert alert-dark shadow_blue'}  d-flex align-items-center justify-content-start  p-2 rounded-1 m-2 mt-0 mb-0" role="alert">
+            <div 
+                class="${sticker ? '' :  'alert alert-dark shadow_blue'}  d-flex align-items-center justify-content-start  p-2 rounded-1 m-2 mt-0 mb-0"
+                style='${sticker ? '' : message_styles}'
+                role="alert" 
+            >
+                 ${message_icon ? `
+                    <span class="position-absolute top-0 start-50 translate-middle">
+                        <img  src='${message_icon}' class="message_icon runded-1">
+                    </span>  
+                ` : ''}
                 ${bot_success ? `<i class="bi bi-robot m-1 text-success"></i>` : ''}
                 ${bot_danger ? `<i class="bi bi-robot m-1 text-danger"></i>` : ''}
           
@@ -650,7 +684,7 @@ class app_controller {
             </div>
         `
 
-        
+
         this.#message_box.appendChild(item)
         this.scrool_bottom()
     }
@@ -668,15 +702,15 @@ class api_controller {
     incoming_data(soket) {
         soket.on('message', (data) => {
             if (data.user) App_Controller.start(data)
-            if(data.jeirani == false) {
+            if (data.jeirani == false) {
                 App_Controller.close_games_modal()
-            } 
+            }
             if (data.change_name) App_Controller.set_name(data.name)
             if (data.change_img) App_Controller.set_img(data.img)
             if (data.users_info) App_Controller.set_users_count(data)
             if (data.jeirani_result) {
                 App_Controller.send_jeirani_game_results(data)
-            } 
+            }
             if (data.message && !data.jeirani_result) {
                 if (data.connect) App_Controller.connect()
                 if (data.disconnect) App_Controller.disconnect()
@@ -687,13 +721,13 @@ class api_controller {
                             App_Controller.show_jeirani_request()
                         }
                     }
-                    if(data.center) {
+                    if (data.center) {
                         App_Controller.set_message_center(data)
                     } else {
                         if (data.right) App_Controller.set_message_right(data)
                         if (!data.right) App_Controller.set_message_left(data)
                     }
-                   
+
                 }
 
             }

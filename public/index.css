@@ -9,10 +9,17 @@ p,
 small {
     padding: 0px;
     margin: 0px;
-    font-family: 'BPG Arial', sans-serif !important;
+    /* font-family: 'Arial Narrow', sans-serif !important; */
+    font-family: 'Arial', sans-serif !important;
+    /* font-family: 'Geo_Arial', sans-serif !important; */
+    /* font-family: 'Arial MT Black', sans-serif !important; */
 }
 
 .users-icon {
+    height: 14px;
+}
+
+.message_icon {
     height: 15px;
 }
 
@@ -149,8 +156,8 @@ p {
 }
 
 .message_img {
-    width: 50px;
-    height: 50px;
+    width: 55px;
+    height: 55px;
 }
 
 .shadow_in {

@@ -394,13 +394,13 @@ class Users_Service {
                 if (!user) return
 
                 let is_pidarasti = false
-                if(data.message) {
-                    if(data.message.includes('გეი')) is_pidarasti = true
-                    if(data.message.includes('gei')) is_pidarasti = true
-                    if(data.message.includes('pasi var')) is_pidarasti = true
-                    if(data.message.includes('პასი ვარ')) is_pidarasti = true
-                    if(data.message.includes('mogiwov')) is_pidarasti = true
-                    if(data.message.includes('მოგიწოვ')) is_pidarasti = true
+                if (data.message && data.message != true) {
+                    if (data.message.includes('გეი')) is_pidarasti = true
+                    if (data.message.includes('gei')) is_pidarasti = true
+                    if (data.message.includes('pasi var')) is_pidarasti = true
+                    if (data.message.includes('პასი ვარ')) is_pidarasti = true
+                    if (data.message.includes('mogiwov')) is_pidarasti = true
+                    if (data.message.includes('მოგიწოვ')) is_pidarasti = true
                 }
 
                 const message = new Message({
@@ -417,9 +417,12 @@ class Users_Service {
                     bot_success: data.bot_success ?? null,
                     center: data.center ?? false,
                     right: sender.socket_id == socket_id ? true : false,
-                    // sender info
+                    // sender info + vip
                     user_img: sender.img,
                     user_name: sender.name ?? null,
+                    message_styles: sender.message_styles ?? null,
+                    message_icon: sender.message_icon ?? null,
+                    queen: sender.queen ?? null,
                     // actions
                     sticker: data.sticker ?? null,
                     jeirani: data.jeirani,
@@ -428,7 +431,7 @@ class Users_Service {
                     message: data.message
                 })
                 user.socket.send(message)
-                if(is_pidarasti) {
+                if (is_pidarasti) {
                     const new_message = message
                     new_message.bot_danger = true
                     new_message.bot_success = false
@@ -698,7 +701,7 @@ class Users_Service {
         try {
             let user = this.#get_user_by_socket_id(socket_id)
             if (!user) return
-            user.name = name
+            user.set_name(name)
             this.#update_user(user)
             return user
         } catch (error) {
@@ -736,14 +739,31 @@ export default USERS_SERVICE
 
 
 class User {
+    #vip_profiles = [
+        { queen: null, name: 'Sanzona', img: './static/vip_profiles/gungrave.png', message_icon: null, message_styles: 'color:#A51C30;box-shadow: -1px 0px 5px -2px rgba(210,18,46,0.75);-webkit-box-shadow: -1px 0px 5px -2px rgba(210,18,46,0.75);-moz-box-shadow: -1px 0px 5px -2px rgba(210,18,46,0.75);border-radius:0px !important;'},
+        { queen: null, name: 'Jonah', img: './static/vip_profiles/Jonah.png', message_icon: null, message_styles: 'border-bottom: #A51C3096  solid 1px;border-top: #A51C3096  solid 1px;border-right: none;border-left: none;box-shadow: none;border-radius: 0px !important;'},
+        { queen: null, name: 'Volk', img: './static/vip_profiles/Volk.png', message_icon: null, message_styles: 'border-right: #662d91b8   solid 1px;border-left: #662d91b8   solid 1px;border-top: none;border-bottom: none;box-shadow: none;border-radius: 0px !important;background-color:#662d911f;'},
+        { queen: null, name: 'Lelouch', img: './static/vip_profiles/Lelouch.png', message_icon: './static/vip_profiles/icons/Geass.png', message_styles: 'border-right: #662d91b8 solid 3px;border-left: #662d91b8 solid 3px;border-top: #662d91b8 solid 1px;border-bottom: none;box-shadow: none;border-radius: 50px !important;background-color: #662d911f;color: #fddcdc;'},
+
+
+        { queen: null,name: 'Bad girl', img: './static/vip_profiles/Bad_girl.png', message_icon: null, message_styles: 'border-right: #35374B solid 3px;border-left: #35374B solid 3px;border-top: none;border-bottom: none;box-shadow: none;border-radius: 25px !important;background-color: transparent;'},
+        { queen: null, name: 'Hot', img: './static/vip_profiles/Hot.png', message_icon: null, message_styles: 'border-right: none;border-left: #940B92 solid 2px;border-top: none;border-bottom: none;box-shadow: none;border-radius: 0px 20px 0px 20px !important;background-color: #7a1cac1a;color: #ddcde6;'},
+        { queen: true, name: 'Ana',img:'./static/vip_profiles/Queen.png', message_icon: './static/vip_profiles/icons/Tamaris_drosha.png', message_styles: 'border-right: #FFD7008A solid 2px;border-left: #FFD7008A solid 2px;border-top: #FFD7008A solid 1px;border-bottom: none;box-shadow: none;border-radius: 5px 5px 15px 15px !important;background-color: #ffef9617;color: #ffd9d9;'}
+    ]
     user;
     chat_id;
     active;
     socket;
     socket_id;
+    // profile
+    message_styles;
+    message_icon;
+    queen;
     name;
     img;
     constructor(socket) {
+
+
         this.user = true // for connet trigger
         this.chat_id = null
         this.active = false
@@ -751,6 +771,18 @@ class User {
         this.socket_id = socket.id
         this.name = null
         this.img = './static/no_img.jpg'
+    }
+    set_name(name) {
+        const is_vip = this.#vip_profiles.find(v => v.name == name)
+        if (is_vip) {
+            this.name = name
+            this.img = is_vip.img
+            this.message_styles = is_vip.message_styles
+            this.message_icon = is_vip.message_icon
+            this.queen = is_vip.queen
+        } else {
+            this.name = name
+        }
     }
     set_chat_id(id) {
         this.chat_id = id
@@ -761,6 +793,13 @@ class User {
 }
 
 class Message {
+
+    // profile
+    user_img;
+    message_styles;
+    message_icon;
+    queen;
+    // message data
     vouting
     open_chat_accept
     open_chat_request;
@@ -771,7 +810,6 @@ class Message {
     music;
     music_accept;
     jeirani;
-    user_img;
     disconnect;
     connect;
     bot;
@@ -780,6 +818,12 @@ class Message {
     message;
     date;
     constructor(data) {
+        // profile
+        this.user_img = data.user_img ?? './static/no_img.jpg'
+        this.message_styles = data.message_styles ?? null
+        this.message_icon = data.message_icon ?? null
+        this.queen = data.queen ?? null
+        // message data
         this.vouting = data.vouting ?? null
         this.open_chat_accept = data.open_chat_accept ?? null
         this.open_chat_request = data.open_chat_request ?? null
@@ -790,7 +834,7 @@ class Message {
         this.music = data.music ?? null
         this.music_accept = data.music_accept ?? null
         this.sticker = data.sticker ?? null
-        this.user_img = data.user_img ?? './static/no_img.jpg'
+
         this.disconnect = data.disconnect ?? false
         this.connect = data.connect ?? false
         this.bot = data.bot ?? false
