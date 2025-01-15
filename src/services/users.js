@@ -519,7 +519,6 @@ class Users_Service {
         try {
             if (data.message.length < 2) return
             const sender = this.#get_user_by_socket_id(data.socket_id)
-            console.log('messages')
             if (!sender) return
             const chat = this.#get_chat_by_id(sender.chat_id)
             const room = this.#get_room_by_id(sender.room_id)
@@ -608,13 +607,25 @@ class Users_Service {
             const sender = this.#get_user_by_socket_id(socket_id)
             if (!sender) return
             const chat = this.#get_chat_by_id(sender.chat_id)
-            if (!chat) return
+            const room = this.#get_room_by_id(sender.room_id)
+       
+            let socket_ids = []
+            let message = ''
+            if (chat) {
+                socket_ids = chat.socket_ids
+                message = 'იქეთ მაგიდიდან სიმღერა მოგიძღვნეს'
+            } 
+            if (room) {
+                socket_ids = room.socket_ids
+                message = `მოდი ${room.name}ში სიმღერა ვაგულაოთ`
+            } 
+        
             this.send_messages({
                 music: true,
                 socket_id: sender.socket_id,
-                message: 'იქეთ მაგიდიდან სიმღერა მოგიძღვნეს'
+                message: message
             })
-            chat.socket_ids.forEach(id => {
+            socket_ids.forEach(id => {
                 const user = this.#get_user_by_socket_id(id)
                 if (user.socket_id == sender.socket_id) return
                 user.socket.send({
@@ -622,7 +633,7 @@ class Users_Service {
                     music: music,
                     index: index,
                     collection: collection,
-                    title: 'იქეთ მაგიდიდან სიმღერა მოგიძღვნეს'
+                    title: message
                 })
             });
 
@@ -729,9 +740,16 @@ class Users_Service {
 
             } else {
                 const sender = this.#get_user_by_socket_id(socket_id)
+            
                 const chat = this.#get_chat_by_id(sender.chat_id)
+                const room = this.#get_room_by_id(sender.room_id)
+           
+                let socket_ids = []
+                if (chat) socket_ids = chat.socket_ids
+                if (room) socket_ids = room.socket_ids
+
                 const jeireni = new Jeirani()
-                chat.socket_ids.forEach(socket_id => {
+                socket_ids.forEach(socket_id => {
                     jeireni.players.push({
                         socket_id: socket_id,
                         img_index: socket_id == sender.socket_id ? img_index : null
