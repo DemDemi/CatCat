@@ -1,5 +1,6 @@
 import fs from 'fs'
 import path from 'path';
+import { rimraf } from 'rimraf'
 const __dirname = path.resolve()
 
 const stickers_path = path.join(__dirname, 'public/static/stickers')
@@ -8,14 +9,41 @@ const public_stickers_path = 'static/stickers'
 
 
 
-class Stickers_controller {
+class Stickers_service {
 
-    async get_stickers(password) {
+    async upload(file, collection_name) {
+        try {
+            if (!fs.existsSync(path.resolve(stickers_path, collection_name))) {
+                fs.mkdirSync(path.resolve(stickers_path, collection_name));
+            }
+            const file_name = file.name
+            const file_path = path.resolve(stickers_path, collection_name, file_name)
+            file.mv(file_path)
+            return {
+                path: file_path + file_name
+            }
+        } catch (error) {
+            console.log(error)
+            return null
+        }
+    }
+
+    async delete(file_path) {
+        try {
+            rimraf.sync(path.resolve(file_path));
+            return path
+        } catch (error) {
+            console.log(error)
+            return null
+        }
+    }
+
+    async get_stickers() {
         try {
             let stickers = []
             let folder_names = await this.get_sticker_folder_names()
 
-            for (let i = 0; i < folder_names.length; i++) {  
+            for (let i = 0; i < folder_names.length; i++) {
                 const dir = path.join(stickers_path, folder_names[i])
                 const sticker_names = await this.get_sticker_names(dir)
                 let collection = []
@@ -75,4 +103,4 @@ class Stickers_controller {
 
 }
 
-export const Stickers_Controller = new Stickers_controller()
+export const Stickers_Service = new Stickers_service()

@@ -1,5 +1,8 @@
 import fs from 'fs'
 import path from 'path';
+import { v4 as uuidv4 } from 'uuid';
+import {rimraf} from 'rimraf'
+
 const __dirname = path.resolve()
 
 
@@ -7,11 +10,52 @@ class Music_service {
 
     collections_mp3_path = path.join(__dirname, 'public/mp3')
     collections_posters__path = path.join(__dirname, 'public/mp3_posters')
-
     collections_posters_public_path = 'mp3_posters'
     collections_mp3_public_path = 'mp3'
     collection_poster_name = 'poster.jpg'
     no_music_poster_public_path = path.join('static', 'no_music_poster.jpg')
+
+    async upload_mp3(file, collection_name) {
+        try {
+            if (!fs.existsSync(path.resolve(this.collections_mp3_path, collection_name))){
+                fs.mkdirSync(path.resolve(this.collections_mp3_path, collection_name));
+            }
+            const file_name = file.name
+            const file_path = path.resolve(this.collections_mp3_path, collection_name, file_name)
+            file.mv(file_path)
+            return file_path
+        } catch (error) {
+            console.log(error)
+            return null
+        }
+    }
+
+    async upload_poster(file, collection_name) {
+        try {
+            if (!fs.existsSync(path.resolve(this.collections_posters__path, collection_name))){
+                fs.mkdirSync(path.resolve(this.collections_posters__path, collection_name));
+            }
+            const file_name = file.name
+            const file_path = path.resolve(this.collections_posters__path, collection_name, file_name)
+            file.mv(file_path)
+            return {
+                path: file_path + file_name
+            }
+        } catch (error) {
+            console.log(error)
+            return null
+        }
+    }
+
+    async delete(file_path) {
+        try {
+            rimraf.sync(path.resolve(file_path));
+            return path
+        } catch (error) {
+            console.log(error)
+            return null
+        }
+    }
 
 
     async search_music(query) {

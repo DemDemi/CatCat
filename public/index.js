@@ -28,6 +28,7 @@ class app_controller {
     #connect_block = document.getElementById('connect_block')
     #loading_block = document.getElementById('loading_block')
     #disconnect_block = document.getElementById('disconnect_block')
+    #rooms_block = document.getElementById('rooms_block')
 
     // app music
     #music_collections_list = document.getElementById('music_collections_list')
@@ -99,10 +100,11 @@ class app_controller {
     }
 
     // app info ===================
+
+
     set_users_count(data) {
         //header-partails
         document.getElementById('users_count').textContent = data.users_count
-
         document.getElementById('duble_count').textContent = data.duble_count
         const duble_count_C = document.getElementById('duble_count_C')
         duble_count_C.style.display = data.duble_count ? 'block' : 'none'
@@ -116,6 +118,26 @@ class app_controller {
         const penta_count_C = document.getElementById('penta_count_C')
         penta_count_C.style.display = data.penta_count ? 'block' : 'none'
     }
+
+
+    // rooms ================= START
+
+    set_rooms_info(rooms) {
+        debugger
+        rooms.forEach(room => {
+            const count_E = document.getElementById(`count_${room.id}`)
+            if(!count_E) return
+            count_E.textContent = `${room.users_count}/${room.users_max_count}`
+        });
+    }
+
+    connect_to_room(room_id) {
+        Api_Controller.outgoing_data({
+            room: true,
+            room_id: room_id,
+        })
+    }
+    // rooms ================= END
 
     // onen chat ================= START
     open_chat_request(max_users) {
@@ -420,11 +442,13 @@ class app_controller {
 
     start(user) {
         this.#connect_block.style.display = "block"
+        this.#rooms_block.style.display = "block"
     }
 
     #find_couple() {
         this.#connect_block.style.display = 'none'
         this.#disconnect_block.style.display = 'none'
+        this.#rooms_block.style.display = "none"
         this.#loading_block.style.display = 'block'
         Api_Controller.outgoing_data({
             online: true
@@ -434,10 +458,10 @@ class app_controller {
         this.#toggle_game_modal_btn.disabled = false
         this.#text_area.disabled = false
         this.#send_btn.disabled = false
-        this.#text_area.value = ''
         this.#message_box.style.display = 'block'
         // blocks
         this.#connect_block.style.display = 'none'
+        this.#rooms_block.style.display = "none"
         this.#disconnect_block.style.display = 'none'
         this.#loading_block.style.display = 'none'
 
@@ -454,6 +478,7 @@ class app_controller {
         this.#message_box.innerHTML = ''
         // blocks
         this.#connect_block.style.display = 'none'
+        this.#rooms_block.style.display = "block"
         this.#disconnect_block.style.display = 'block'
         this.#loading_block.style.display = 'none'
 
@@ -489,10 +514,7 @@ class app_controller {
         this.#profile_img.src = img
     }
     // profile actions ================= END
-    clear_chat() {
-        this.#text_area.value = ''
-        this.#message_box.innerHTML = ''
-    }
+
 
     scrool_bottom() {
         window.scrollTo({
@@ -529,7 +551,6 @@ class app_controller {
         const message_styles = data.message_styles
         const message_icon = data.message_icon
         // message data
-        debugger
         this.#text_area.value = ''
         const open_chat_request = data.open_chat_request
         const open_chat_accept = data.open_chat_accept
@@ -547,7 +568,7 @@ class app_controller {
         item.className = 'd-flex align-items-center justify-content-end m-1 mb-2 '
         item.innerHTML = `
             <div 
-                class=" ${sticker ? '' : 'alert alert-dark shadow_blue'}  d-flex align-items-center justify-content-end  p-2 rounded-1 m-2 mt-0 mb-0" 
+                class=" ${sticker ? '' : 'alert alert-dark shadow_blue'} d-flex align-items-center justify-content-end  p-2 rounded-1 m-2 mt-0 mb-0" 
                 style='${sticker ? '' : message_styles}'
                 role="alert"
             >
@@ -629,7 +650,7 @@ class app_controller {
                 >
             </div>
             <div 
-                class="${sticker ? '' :  'alert alert-dark shadow_blue'}  d-flex align-items-center justify-content-start  p-2 rounded-1 m-2 mt-0 mb-0"
+                class="${sticker ? '' :  'alert alert-dark shadow_blue'} d-flex align-items-center justify-content-start  p-2 rounded-1 m-2 mt-0 mb-0"
                 style='${sticker ? '' : message_styles}'
                 role="alert" 
             >
@@ -701,6 +722,7 @@ class api_controller {
 
     incoming_data(soket) {
         soket.on('message', (data) => {
+            if(data.rooms_info) App_Controller.set_rooms_info(data.rooms)
             if (data.user) App_Controller.start(data)
             if (data.jeirani == false) {
                 App_Controller.close_games_modal()
@@ -738,12 +760,7 @@ class api_controller {
             if (data.sharing_music) App_Controller.set_sharing_music_request(data.music, data.index, data.collection, data.title)
         })
 
-        if (false == true) {
-            this.#connect = true
-            if (data.bot && data.connect) {
-                App_Controller.clear_chat()
-            }
-        }
+
 
     }
 

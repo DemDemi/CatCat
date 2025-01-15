@@ -7,7 +7,11 @@ class Users_Service {
         setInterval(() => {
             this.#chat_connection_interval()
         }, 1000);
+        setTimeout(() => {
+            this.#create_rooms()
+        }, 100)
     }
+    #rooms = []
     #chats = []
     #users = []
     #jeirani = []
@@ -50,6 +54,34 @@ class Users_Service {
     }
     // =============================================================> STATE ACTIONS START
 
+    //===== Rooms
+    get_rooms() {
+        return this.#rooms
+    }
+    #get_room_by_id(id) {
+        try {
+            const room = this.#rooms.find(r => r.id == id)
+            return room
+        } catch (error) {
+            console.log(error)
+        }
+    }
+    #update_room(room) {
+        try {
+            let new_rooms = []
+            for (let i = 0; i < this.#rooms.length; i++) {
+                if (this.#rooms[i].id == room.id) {
+                    new_rooms.push(room)
+                } else {
+                    new_rooms.push(this.#rooms[i])
+                }
+            }
+            this.#rooms = new_rooms
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
     //===== users
     find_or_create(socket) {
         try {
@@ -69,7 +101,6 @@ class Users_Service {
         } catch (error) {
             console.log(error)
         }
-
     }
     #update_user(user) {
         try {
@@ -86,7 +117,6 @@ class Users_Service {
         } catch (error) {
             console.log(error)
         }
-
     }
     #delete_user(socket_id) {
         try {
@@ -127,8 +157,6 @@ class Users_Service {
         } catch (error) {
             console.log(error)
         }
-
-
     }
     #delete_chat_by_id(id) {
         try {
@@ -141,13 +169,118 @@ class Users_Service {
     // =============================================================> STATE ACTIONS END
 
 
-    // ======================================================================================> CREATE DUBLE CHAT START
+    #create_rooms() {
+        const room_1 = new Room({
+            id: 1,
+            name: 'კუტოკი',
+            icon: './static/rooms/room_1_icon.png'
+        })
+        const room_2 = new Room({
+            id: 2,
+            name: 'ბარი',
+            icon: './static/rooms/room_2_icon.png'
+        })
+        const room_3 = new Room({
+            id: 3,
+            name: 'კაფე',
+                icon: './static/rooms/room_3_icon.png'
+        })
+        this.#rooms = [room_1, room_2, room_3]
+        this.send_rooms()
+    }
+
+
+
+    send_rooms() {
+        try {
+            for (let i = 0; i < this.#users.length; i++) {
+                const socket = this.#users[i].socket
+                socket.send({
+                    rooms_info: true,
+                    rooms: this.#rooms
+                })
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    }
+    
+    connect_user_to_room(socket_id, room_id) {
+        try {
+            const user = this.#get_user_by_socket_id(socket_id)
+            const room = this.#get_room_by_id(room_id)
+            if (!user || !room) return
+            if(room.is_full) return
+            if(room.socket_ids.includes(user.socket_id)) return
+            if(user.room_id) {
+                this.#disconnect_user_from_room(user.socket_id, user.room_id)
+                return
+            }   
+            user.set_room_id(room.id)
+            user.set_chat_id(null)
+            user.set_is_active(false)
+            this.#update_user(user)
+            room.add_user(user.socket_id)
+            this.#update_room(room)
+            this.send_messages({
+                socket_id: user.socket_id,
+                bot_success: true,
+                connect: true,
+                center: true,
+                message: `${room.name}ში ${room.socket_ids.length} კაცია`
+            })
+            this.send_users_count()
+            this.send_rooms()
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    #disconnect_user_from_room(socket_id, room_id) {
+        try {
+            const sender = this.#get_user_by_socket_id(socket_id)
+            const room = this.#get_room_by_id(room_id)
+            if (sender) {
+                sender.set_is_active(false)
+                sender.set_chat_id(null)
+                sender.set_room_id(null)
+                this.#update_user(sender)
+                sender.socket.send(
+                    new Message({
+                        bot: true,
+                        disconnect: true,
+                        message: true
+                    })
+                )
+            }
+            room.remove_user(socket_id)
+            this.#update_room(room)
+            room.socket_ids.forEach(socket_id => {
+                const user = this.#get_user_by_socket_id(socket_id)
+                if (!user) return
+                user.socket.send(
+                    new Message({
+                        bot_danger: true,
+                        center: true,
+                        message: `${room.name}ში ${(room.socket_ids.length)} კაცია`
+                    })
+                )
+            });
+            this.send_users_count()
+            this.send_rooms()
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+
 
     disconnect_user(socket_id) {
         try {
             const sender = this.#get_user_by_socket_id(socket_id)
             if (!sender) return
             if (sender.chat_id) this.disconnect_user_from_chat(sender.socket_id, sender.chat_id)
+            if (sender.room_id) this.#disconnect_user_from_room(sender.socket_id, sender.room_id)
             this.#delete_user(socket_id)
         } catch (error) {
             console.log(error)
@@ -160,6 +293,7 @@ class Users_Service {
             const sender = this.#get_user_by_socket_id(socket_id)
             if (!sender) return
             if (sender.chat_id) this.disconnect_user_from_chat(sender.socket_id, sender.chat_id)
+            if (sender.room_id) this.#disconnect_user_from_room(sender.socket_id, sender.room_id)
         } catch (error) {
             console.log(error)
         }
@@ -171,6 +305,7 @@ class Users_Service {
             let user = this.#get_user_by_socket_id(socket_id)
             if (!user) return
             user.set_chat_id(null)
+            user.set_room_id(null)
             user.set_is_active(true)
             this.#update_user(user)
         } catch (error) {
@@ -182,7 +317,7 @@ class Users_Service {
     #chat_connection_interval() {
         try {
             const target_users = this.#users.filter(u =>
-                u.active == true && u.chat_id == null
+                u.active == true && u.chat_id == null && u.room_id == null
             )
             if (target_users.length == 1) {
                 const free_chat = this.#find_free_chat()
@@ -330,8 +465,6 @@ class Users_Service {
         } catch (error) {
             console.log(error)
         }
-
-
     }
 
     async open_chat_accept(socket_id, max_users) {
@@ -386,15 +519,22 @@ class Users_Service {
         try {
             if (data.message.length < 2) return
             const sender = this.#get_user_by_socket_id(data.socket_id)
+            console.log('messages')
             if (!sender) return
             const chat = this.#get_chat_by_id(sender.chat_id)
-            if (!chat) return
-            chat.socket_ids.forEach(socket_id => {
+            const room = this.#get_room_by_id(sender.room_id)
+       
+            let socket_ids = []
+            if (chat) socket_ids = chat.socket_ids
+            if (room) socket_ids = room.socket_ids
+            console.log(room)
+            console.log(socket_ids)
+            socket_ids.forEach(socket_id => {
                 const user = this.#get_user_by_socket_id(socket_id)
                 if (!user) return
 
                 let is_pidarasti = false
-<<<<<<< HEAD
+
                 if (data.message && data.message != true) {
                     if (data.message.includes('გეი')) is_pidarasti = true
                     if (data.message.includes('gei')) is_pidarasti = true
@@ -402,15 +542,6 @@ class Users_Service {
                     if (data.message.includes('პასი ვარ')) is_pidarasti = true
                     if (data.message.includes('mogiwov')) is_pidarasti = true
                     if (data.message.includes('მოგიწოვ')) is_pidarasti = true
-=======
-                if(data.message && data.message != true) {
-                    if(data.message.includes('გეი')) is_pidarasti = true
-                    if(data.message.includes('gei')) is_pidarasti = true
-                    if(data.message.includes('pasi var')) is_pidarasti = true
-                    if(data.message.includes('პასი ვარ')) is_pidarasti = true
-                    if(data.message.includes('mogiwov')) is_pidarasti = true
-                    if(data.message.includes('მოგიწოვ')) is_pidarasti = true
->>>>>>> b00efb798ea3e7c63414ca31b9e2dcf66274f5e2
                 }
 
                 const message = new Message({
@@ -704,7 +835,6 @@ class Users_Service {
         } catch (error) {
             console.log(error)
         }
-
     }
 
     save_name(socket_id, name) {
@@ -750,32 +880,30 @@ export default USERS_SERVICE
 
 class User {
     #vip_profiles = [
-        { queen: null, name: 'Sanzona', img: './static/vip_profiles/gungrave.png', message_icon: null, message_styles: 'color:#A51C30;box-shadow: -1px 0px 5px -2px rgba(210,18,46,0.75);-webkit-box-shadow: -1px 0px 5px -2px rgba(210,18,46,0.75);-moz-box-shadow: -1px 0px 5px -2px rgba(210,18,46,0.75);border-radius:0px !important;'},
-        { queen: null, name: 'Jonah', img: './static/vip_profiles/Jonah.png', message_icon: null, message_styles: 'border-bottom: #A51C3096  solid 1px;border-top: #A51C3096  solid 1px;border-right: none;border-left: none;box-shadow: none;border-radius: 0px !important;'},
-        { queen: null, name: 'Volk', img: './static/vip_profiles/Volk.png', message_icon: null, message_styles: 'border-right: #662d91b8   solid 1px;border-left: #662d91b8   solid 1px;border-top: none;border-bottom: none;box-shadow: none;border-radius: 0px !important;background-color:#662d911f;'},
-        { queen: null, name: 'Lelouch', img: './static/vip_profiles/Lelouch.png', message_icon: './static/vip_profiles/icons/Geass.png', message_styles: 'border-right: #662d91b8 solid 3px;border-left: #662d91b8 solid 3px;border-top: #662d91b8 solid 1px;border-bottom: none;box-shadow: none;border-radius: 50px !important;background-color: #662d911f;color: #fddcdc;'},
-
-
-        { queen: null,name: 'Bad girl', img: './static/vip_profiles/Bad_girl.png', message_icon: null, message_styles: 'border-right: #35374B solid 3px;border-left: #35374B solid 3px;border-top: none;border-bottom: none;box-shadow: none;border-radius: 25px !important;background-color: transparent;'},
-        { queen: null, name: 'Hot', img: './static/vip_profiles/Hot.png', message_icon: null, message_styles: 'border-right: none;border-left: #940B92 solid 2px;border-top: none;border-bottom: none;box-shadow: none;border-radius: 0px 20px 0px 20px !important;background-color: #7a1cac1a;color: #ddcde6;'},
-        { queen: true, name: 'Ana',img:'./static/vip_profiles/Queen.png', message_icon: './static/vip_profiles/icons/Tamaris_drosha.png', message_styles: 'border-right: #FFD7008A solid 2px;border-left: #FFD7008A solid 2px;border-top: #FFD7008A solid 1px;border-bottom: none;box-shadow: none;border-radius: 5px 5px 15px 15px !important;background-color: #ffef9617;color: #ffd9d9;'}
+        { name: 'Sanzona', img: './static/vip_profiles/gungrave.png', message_icon: null, message_styles: 'color:#A51C30;box-shadow: -1px 0px 5px -2px rgba(210,18,46,0.75);-webkit-box-shadow: -1px 0px 5px -2px rgba(210,18,46,0.75);-moz-box-shadow: -1px 0px 5px -2px rgba(210,18,46,0.75);border-radius:0px !important;' },
+        { name: 'Jonah', img: './static/vip_profiles/Jonah.png', message_icon: null, message_styles: 'border-bottom: #A51C3096  solid 1px;border-top: #A51C3096  solid 1px;border-right: none;border-left: none;box-shadow: none;border-radius: 0px !important;' },
+        { name: 'Volk', img: './static/vip_profiles/Volk.png', message_icon: null, message_styles: 'border-right: #662d91b8   solid 1px;border-left: #662d91b8   solid 1px;border-top: none;border-bottom: none;box-shadow: none;border-radius: 0px !important;background-color:#662d911f;' },
+        { name: 'Lelouch', img: './static/vip_profiles/Lelouch.png', message_icon: './static/vip_profiles/icons/Geass.png', message_styles: 'border-right: #662d91b8 solid 3px;border-left: #662d91b8 solid 3px;border-top: #662d91b8 solid 1px;border-bottom: none;box-shadow: none;border-radius: 50px !important;background-color: #662d911f;color: #fddcdc;' },
+        { name: 'Bad girl', img: './static/vip_profiles/Bad_girl.png', message_icon: null, message_styles: 'border-right: #35374B solid 3px;border-left: #35374B solid 3px;border-top: none;border-bottom: none;box-shadow: none;border-radius: 25px !important;background-color: transparent;' },
+        { name: 'Hot', img: './static/vip_profiles/Hot.png', message_icon: null, message_styles: 'border-right: none;border-left: #940B92 solid 2px;border-top: none;border-bottom: none;box-shadow: none;border-radius: 0px 20px 0px 20px !important;background-color: #7a1cac1a;color: #ddcde6;' },
+        { name: 'Ana', img: './static/vip_profiles/Queen.png', message_icon: './static/vip_profiles/icons/Tamaris_drosha.png', message_styles: 'border-right: #FFD7008A solid 2px;border-left: #FFD7008A solid 2px;border-top: #FFD7008A solid 1px;border-bottom: none;box-shadow: none;border-radius: 5px 5px 15px 15px !important;background-color: #ffef9617;color: #ffd9d9;' },
+        { name: 'Cat', img: './static/vip_profiles/Cat.png', message_icon: './static/vip_profiles/icons/green_eyes.png', message_styles: 'border-right: #316629 solid 2px;border-left: #316629 solid 2px;border-top: none;border-bottom: none;box-shadow: none;border-radius: 10px 20px 10px 20px !important;background-color: #545B6F47;color: #FFE5FC;' },
     ]
     user;
     chat_id;
+    room_id;
     active;
     socket;
     socket_id;
     // profile
     message_styles;
     message_icon;
-    queen;
     name;
     img;
     constructor(socket) {
-
-
         this.user = true // for connet trigger
         this.chat_id = null
+        this.room_id = null
         this.active = false
         this.socket = socket
         this.socket_id = socket.id
@@ -789,13 +917,15 @@ class User {
             this.img = is_vip.img
             this.message_styles = is_vip.message_styles
             this.message_icon = is_vip.message_icon
-            this.queen = is_vip.queen
         } else {
             this.name = name
         }
     }
     set_chat_id(id) {
         this.chat_id = id
+    }
+    set_room_id(id) {
+        this.room_id = id
     }
     set_is_active(bool) {
         this.active = bool
@@ -901,4 +1031,51 @@ class Jeirani {
         this.id = Date.now()
         this.players = []
     }
+}
+
+class Room {
+    id;
+    is_full;
+    users_max_count;
+    users_count;
+    socket_ids;
+    name;
+    icon;
+
+    constructor(data) {
+        this.id = data.id ?? Date.now()
+        this.is_full = false
+        this.users_max_count = 20
+        this.users_count = 0
+        this.socket_ids = []
+
+        this.name = data.name ?? null
+        this.icon = data.icon ?? null
+    }
+
+    add_user(socket_id) {
+        if(this.socket_ids.includes(socket_id)) return
+        this.socket_ids = [...this.socket_ids, socket_id]
+        this.#set_count()
+    }
+
+    remove_user(socket_id) {
+        this.socket_ids = this.socket_ids.filter(s => s != socket_id)
+        this.#set_count()
+    }
+
+    set_users_max_count(count) {
+        this.users_max_count = count
+        this.#set_count()
+    }
+
+    #set_count() {
+        this.users_count = this.socket_ids.length
+        if (this.socket_ids.length == this.users_max_count) {
+            this.is_full = true
+        } else {
+            this.is_full = false
+        }
+    }
+
 }

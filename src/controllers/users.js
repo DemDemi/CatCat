@@ -7,17 +7,24 @@ class Users_Controller {
 
     validate(socket) {
         this.find_or_create(socket)
-        this.send_users_count()
+        USERS_SERVICE.send_rooms()
+        USERS_SERVICE.send_users_count()
+        
 
         socket.on('disconnect', () => {
             USERS_SERVICE.disconnect_user(socket.id)
             USERS_SERVICE.send_users_count()
+            USERS_SERVICE.send_rooms()
             USERS_SERVICE.end_jeirani(socket.id)
         })
 
         socket.on('getting', (data) => {
             if (data.offline) USERS_SERVICE.set_user_offline(socket.id)
             if (data.online) USERS_SERVICE.set_user_online(socket.id)
+
+            if(data.room) {
+                USERS_SERVICE.connect_user_to_room(socket.id, data.room_id)
+            }
 
             if (data.open_chat_request) {
                 let socket_id = socket.id
@@ -74,9 +81,6 @@ class Users_Controller {
         })
     }
 
-    send_users_count() {
-        USERS_SERVICE.send_users_count()
-    }
 
     find_or_create(socket) {
         const user = USERS_SERVICE.find_or_create(socket)
