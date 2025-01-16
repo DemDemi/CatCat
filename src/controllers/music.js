@@ -30,7 +30,7 @@ class Music_controller {
             }
             const file = req.files.file
             const collection_name = req.body.collection_name
-            const path = await Music_Service.upload_mp3(file, collection_name)
+            const path = await Music_Service.upload_poster(file, collection_name)
             res.send(path)
         } catch (error) {
             console.log(error)
