@@ -906,6 +906,7 @@ class User {
         { name: 'Hot', img: './static/vip_profiles/Hot.png', message_icon: null, message_styles: 'border-right: none;border-left: #940B92 solid 2px;border-top: none;border-bottom: none;box-shadow: none;border-radius: 0px 20px 0px 20px !important;background-color: #7a1cac1a;color: #ddcde6;' },
         { name: 'Ana', img: './static/vip_profiles/Queen.png', message_icon: './static/vip_profiles/icons/Tamaris_drosha.png', message_styles: 'border-right: #FFD7008A solid 2px;border-left: #FFD7008A solid 2px;border-top: #FFD7008A solid 1px;border-bottom: none;box-shadow: none;border-radius: 5px 5px 15px 15px !important;background-color: #ffef9617;color: #ffd9d9;' },
         { name: 'Cat', img: './static/vip_profiles/Cat.png', message_icon: './static/vip_profiles/icons/green_eyes.png', message_styles: 'border-right: #316629 solid 2px;border-left: #316629 solid 2px;border-top: none;border-bottom: none;box-shadow: none;border-radius: 10px 20px 10px 20px !important;background-color: #545B6F47;color: #FFE5FC;' },
+        { name: 'Jhon', img: './static/vip_profiles/john_wick_2.png', message_icon: './static/vip_profiles/icons/gun.png', message_styles: 'border-bottom: none;border-top: none;border-left: #a30d46 double 4px;box-shadow: none;border-radius: 0px 10px 0px 10px !important;color: #b5b5b5;border-right: #a30d46 double 4px;' },
     ]
     user;
     chat_id;

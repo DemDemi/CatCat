@@ -38,12 +38,13 @@ class Stickers_service {
         }
     }
 
-    async get_stickers() {
+    async get_stickers(passcode) {
         try {
             let stickers = []
             let folder_names = await this.get_sticker_folder_names()
 
             for (let i = 0; i < folder_names.length; i++) {
+                if(passcode != 'Demi' && folder_names[i] == 'J') continue
                 const dir = path.join(stickers_path, folder_names[i])
                 const sticker_names = await this.get_sticker_names(dir)
                 let collection = []
