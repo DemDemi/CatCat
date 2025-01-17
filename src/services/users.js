@@ -526,8 +526,6 @@ class Users_Service {
             let socket_ids = []
             if (chat) socket_ids = chat.socket_ids
             if (room) socket_ids = room.socket_ids
-            console.log(room)
-            console.log(socket_ids)
             socket_ids.forEach(socket_id => {
                 const user = this.#get_user_by_socket_id(socket_id)
                 if (!user) return
@@ -906,7 +904,9 @@ class User {
         { name: 'Hot', img: './static/vip_profiles/Hot.png', message_icon: null, message_styles: 'border-right: none;border-left: #940B92 solid 2px;border-top: none;border-bottom: none;box-shadow: none;border-radius: 0px 20px 0px 20px !important;background-color: #7a1cac1a;color: #ddcde6;' },
         { name: 'Ana', img: './static/vip_profiles/Queen.png', message_icon: './static/vip_profiles/icons/Tamaris_drosha.png', message_styles: 'border-right: #FFD7008A solid 2px;border-left: #FFD7008A solid 2px;border-top: #FFD7008A solid 1px;border-bottom: none;box-shadow: none;border-radius: 5px 5px 15px 15px !important;background-color: #ffef9617;color: #ffd9d9;' },
         { name: 'Cat', img: './static/vip_profiles/Cat.png', message_icon: './static/vip_profiles/icons/green_eyes.png', message_styles: 'border-right: #316629 solid 2px;border-left: #316629 solid 2px;border-top: none;border-bottom: none;box-shadow: none;border-radius: 10px 20px 10px 20px !important;background-color: #545B6F47;color: #FFE5FC;' },
-        { name: 'Jhon', img: './static/vip_profiles/john_wick_2.png', message_icon: './static/vip_profiles/icons/gun.png', message_styles: 'border-bottom: none;border-top: none;border-left: #a30d46 double 4px;box-shadow: none;border-radius: 0px 10px 0px 10px !important;color: #b5b5b5;border-right: #a30d46 double 4px;' },
+        { name: 'JhonW', img: './static/vip_profiles/john_wick_2.png', message_icon: './static/vip_profiles/icons/gun.png', message_styles: 'border-bottom: none;border-top: none;border-left: #a30d46 double 4px;box-shadow: none;border-radius: 0px 10px 0px 10px !important;color: #b5b5b5;border-right: #a30d46 double 4px;' },
+
+        { name: 'muz', img: './static/vip_profiles/hack.jpg', message_icon: './static/vip_profiles/icons/hacked.png', message_styles: 'border-bottom: none;border-top: none;border-left: #011418 double 5px;box-shadow: none;border-radius: 0px 15px 15px 0px !important;color: #def3ff;border-right: #0a2b39 double 4px;background: rgb(0,82,98);background: linear-gradient(90deg, rgba(0, 82, 98, 0.25) 0%, rgba(159, 10, 60, 0.15) 37%, rgba(5, 0, 96, 0.08) 80%);' },
     ]
     user;
     chat_id;
