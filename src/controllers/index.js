@@ -1,11 +1,21 @@
 import { Stickers_Service } from "../services/stickers.js"
 import { Music_Service } from "../services/music.js"
 import USERS_SERVICE from "../services/users.js"
+import USERS_CONTROLLER from "./users.js"
 class index_controller {
 
+    #blocked = []
 
     async index(req, res) {
 
+
+        const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress 
+        const yle = USERS_CONTROLLER.get_yle_ips()
+        console.log(yle)
+        if(yle.includes(ip)) {
+            res.send('<h1>Yle chame da klikeri traqshi gaikete</h1>')
+        }
+   
         const passcode = req.query.u
         const stickers = await Stickers_Service.get_stickers(passcode)
         const music_collections = await Music_Service.get_collections()

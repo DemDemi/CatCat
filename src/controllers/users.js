@@ -17,12 +17,11 @@ class Users_Controller {
             this.#warning_ip = []
             console.log('clear')
         }, 10000 )
-
-        setInterval( ()=> {
-            this.#blocked_ip = []
-        }, 600000 )
     }
 
+    get_yle_ips() {
+        return this.#blocked_ip
+    }
 
     set_ip(ip) {
         this.#chat_actions.push(ip)
@@ -37,11 +36,11 @@ class Users_Controller {
 
     spam_check(ip) {
         const user_actions = this.#chat_actions.filter(  i => i == ip )
-        if(user_actions.length > 8) {
+        if(user_actions.length > 7) {
             this.#warning_ip.push(ip)
 
             const warnings = this.#warning_ip.filter(  i => i == ip )
-            if(warnings.length > 5) {
+            if(warnings.length > 3) {
                 this.#blocked_ip.push(ip)
             }
             return true
@@ -77,7 +76,7 @@ class Users_Controller {
             if (data.sticker) {
                 this.set_ip(ip)
                 if(this.spam_check(ip)) return
-                if(this.is_blocked(ip)) returnn
+                if(this.is_blocked(ip)) return
                 USERS_SERVICE.send_sticker(socket.id, data.public_path)
             } 
 
