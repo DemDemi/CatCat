@@ -526,6 +526,7 @@ class Users_Service {
             let socket_ids = []
             if (chat) socket_ids = chat.socket_ids
             if (room) socket_ids = room.socket_ids
+            const MESSAGE_ID  = Date.now()
             socket_ids.forEach(socket_id => {
                 const user = this.#get_user_by_socket_id(socket_id)
                 if (!user) return
@@ -542,6 +543,7 @@ class Users_Service {
                 }
 
                 const message = new Message({
+                    id: MESSAGE_ID,
                     // open chat
                     vouting: data.vouting ?? null,
                     open_chat_accept: data.open_chat_accept ?? null,
@@ -566,7 +568,10 @@ class Users_Service {
                     jeirani: data.jeirani,
                     music: data.music ?? null,
                     music_accept: data.music_accept,
-                    message: data.message
+                    message: data.message,
+                    // replay
+                    message_replay_text: data.message_replay_text ?? null,
+                    message_replay_id: data.message_replay_id ?? null
                 })
                 user.socket.send(message)
                 if (is_pidarasti) {
@@ -900,13 +905,16 @@ class User {
         { name: 'Jonah', img: './static/vip_profiles/Jonah.png', message_icon: null, message_styles: 'border-bottom: #A51C3096  solid 1px;border-top: #A51C3096  solid 1px;border-right: none;border-left: none;box-shadow: none;border-radius: 0px !important;' },
         { name: 'Volk', img: './static/vip_profiles/Volk.png', message_icon: null, message_styles: 'border-right: #662d91b8   solid 1px;border-left: #662d91b8   solid 1px;border-top: none;border-bottom: none;box-shadow: none;border-radius: 0px !important;background-color:#662d911f;' },
         { name: 'Lelouch', img: './static/vip_profiles/Lelouch.png', message_icon: './static/vip_profiles/icons/Geass.png', message_styles: 'border-right: #662d91b8 solid 3px;border-left: #662d91b8 solid 3px;border-top: #662d91b8 solid 1px;border-bottom: none;box-shadow: none;border-radius: 50px !important;background-color: #662d911f;color: #fddcdc;' },
-        { name: 'Bad girl', img: './static/vip_profiles/Bad_girl.png', message_icon: null, message_styles: 'border-right: #35374B solid 3px;border-left: #35374B solid 3px;border-top: none;border-bottom: none;box-shadow: none;border-radius: 25px !important;background-color: transparent;' },
+        { name: 'Ani', img: './static/vip_profiles/Bad_girl.png', message_icon: null, message_styles: 'border-right: #35374B solid 3px;border-left: #35374B solid 3px;border-top: none;border-bottom: none;box-shadow: none;border-radius: 25px !important;background-color: transparent;' },
         { name: 'Hot', img: './static/vip_profiles/Hot.png', message_icon: null, message_styles: 'border-right: none;border-left: #940B92 solid 2px;border-top: none;border-bottom: none;box-shadow: none;border-radius: 0px 20px 0px 20px !important;background-color: #7a1cac1a;color: #ddcde6;' },
         { name: 'Ana', img: './static/vip_profiles/Queen.png', message_icon: './static/vip_profiles/icons/Tamaris_drosha.png', message_styles: 'border-right: #FFD7008A solid 2px;border-left: #FFD7008A solid 2px;border-top: #FFD7008A solid 1px;border-bottom: none;box-shadow: none;border-radius: 5px 5px 15px 15px !important;background-color: #ffef9617;color: #ffd9d9;' },
         { name: 'Cat', img: './static/vip_profiles/Cat.png', message_icon: './static/vip_profiles/icons/green_eyes.png', message_styles: 'border-right: #316629 solid 2px;border-left: #316629 solid 2px;border-top: none;border-bottom: none;box-shadow: none;border-radius: 10px 20px 10px 20px !important;background-color: #545B6F47;color: #FFE5FC;' },
-        { name: 'JhonW', img: './static/vip_profiles/john_wick_2.png', message_icon: './static/vip_profiles/icons/gun.png', message_styles: 'border-bottom: none;border-top: none;border-left: #a30d46 double 4px;box-shadow: none;border-radius: 0px 10px 0px 10px !important;color: #b5b5b5;border-right: #a30d46 double 4px;' },
-
+        { name: 'Jhon', img: './static/vip_profiles/john_wick_2.png', message_icon: './static/vip_profiles/icons/gun.png', message_styles: 'border-bottom: none;border-top: none;border-left: #a30d46 double 4px;box-shadow: none;border-radius: 0px 10px 0px 10px !important;color: #b5b5b5;border-right: #a30d46 double 4px;' },
         { name: 'muz', img: './static/vip_profiles/hack.jpg', message_icon: './static/vip_profiles/icons/hacked.png', message_styles: 'border-bottom: none;border-top: none;border-left: #011418 double 5px;box-shadow: none;border-radius: 0px 15px 15px 0px !important;color: #def3ff;border-right: #0a2b39 double 4px;background: rgb(0,82,98);background: linear-gradient(90deg, rgba(0, 82, 98, 0.25) 0%, rgba(159, 10, 60, 0.15) 37%, rgba(5, 0, 96, 0.08) 80%);' },
+        { name: 'Mari', img: './static/vip_profiles/Mari.png', message_icon: './static/vip_profiles/icons/heart_2.png', message_styles: 'border-bottom: none;border-top: #650138 dotted 1px;border-left: #650138 dotted 3px;box-shadow: none;border-radius: 25px 25px 5px 5px !important;color: #e1d1ff;border-right: #650138 dotted 3px;background: rgb(0,82,98);background: linear-gradient(90deg, rgba(26,44,68,0.25) 0%, rgba(127,0,72,0.2) 37%, rgba(110,94,154,0.3) 80%);' },
+        { name: 'Maria', img: './static/vip_profiles/Maria.png', message_icon: './static/vip_profiles/icons/frtebi.png', message_styles: 'border-bottom: none;border-top: none;border-left: #3454a2 double 5px;border-radius: 25px !important;color: #e1cfde;border-right: #3454a2 double 5px;background: linear-gradient(90deg, rgba(55,174,153,0.15) 0%, rgba(99,115,204,0.2) 20%, rgba(77, 102, 186, 0.15) 50%, rgba(99,115,204,0.2) 80%, rgba(55,174,153,0.15) 100%);box-shadow: 0px -5px 10px -4px rgb(52, 84, 162);' },
+        { name: 'L', img: './static/vip_profiles/L.png', message_icon: './static/vip_profiles/icons/L_logo.png', message_styles: 'border-bottom: #4d4237 double 3px;border-top: none;border-left: none;border-radius: 5px 10px 20px 10px !important;color: #d4c7b8;border-right: #4d4237 double 3px;background: linear-gradient(90deg, rgba(229,214,189,0.15) 0%, rgba(77,66,55,0.2) 50%, rgba(229,214,189,0.15) 100%);box-shadow: 0px -2px 5px -2px rgb(89, 79, 73);' },
+        { name: 'Yato', img: './static/vip_profiles/Yato.png', message_styles: 'border-bottom: #2d3c4f double 3px;border-top: none;border-left: none;border-radius: 5px 5px 15px 15px !important;color: #c7d5e8;border-right: none;background: linear-gradient(90deg, rgba(75,131,169,0.2) 0%, rgba(84,145,182,0.2) 50%, rgba(56,76,96,0.2) 100%);box-shadow: 0px -2px 10px -1px rgb(159, 170, 187);' },
     ]
     user;
     chat_id;
@@ -952,7 +960,7 @@ class User {
 }
 
 class Message {
-
+    id;
     // profile
     user_img;
     message_styles;
@@ -977,6 +985,7 @@ class Message {
     message;
     date;
     constructor(data) {
+        this.id = data.id ?? null
         // profile
         this.user_img = data.user_img ?? './static/no_img.jpg'
         this.message_styles = data.message_styles ?? null
@@ -1001,6 +1010,20 @@ class Message {
         this.center = data.center ?? null
         this.message = data.message ?? null
         this.date = this.#get_time()
+        // replay 
+        this.message_replay_text = data.message_replay_text ? this.#cut_text(data.message_replay_text) : null
+        this.message_replay_id = data.message_replay_id ?? null
+    }
+
+    #cut_text(text) {
+        try {
+            if(text.length > 50) {
+                return text.slice(0, 50) + '...'  
+            } else return text
+        } catch (error) {
+            return ''
+        }
+
     }
 
     #get_time() {

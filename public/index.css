@@ -98,6 +98,11 @@ small {
     width: 50px;
 }
 
+.redirect_message {
+    text-decoration: none;
+    
+}
+
 .message_logo {
     height: 30px;
     width: 30px;
@@ -156,8 +161,8 @@ p {
 }
 
 .message_img {
-    width: 55px;
-    height: 55px;
+    width: 58px;
+    height: 58px;
 }
 
 .shadow_in {
@@ -337,8 +342,8 @@ textarea {
     }
 
     .message_img {
-        width: 45px;
-        height: 45px;
+        width: 47px;
+        height: 47px;
     }
 
     .header .users,
@@ -373,8 +378,8 @@ textarea {
     }
 
     .message_img {
-        width: 45px;
-        height: 45px;
+        width: 47px;
+        height: 47px;
     }
 
     .header .users,

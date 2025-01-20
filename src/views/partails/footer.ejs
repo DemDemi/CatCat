@@ -1,8 +1,17 @@
-<div class="chat_container bg-secondary-subtle p-1">
-    <div class="p-1 mx-2">
+<div class="chat_container">
+    <div id="message_replay_C" style="display: none;">
+        <div class="d-flex align-items-center justify-content-end m-1">
+            <span class="mx-3 px-2 bg-black p-1 rounded-pill border border-secondary-subtle text-secondary-subtle bg-secondary-subtle">
+                <i class="bi bi-reply-all-fill fs-6"></i>
+                <small id="message_replay_E">ეე კაი რა მესიჯი...</small>
+                <i class="bi bi-x-circle fs-6" style="cursor: pointer;" id="cansel_message_replay_B"></i>
+            </span>
+        </div>
+    </div>
+
+    <div class="p-1 mx-2 bg-secondary-subtle p-1">
         <div class="input-group">
             <textarea class="form-control textarea-custom" aria-label="With textarea" id="text_area"></textarea>
-
             <div>
                 <button class="btn-grad-black btn-grad-black-liner p-1" type="button" data-bs-toggle="dropdown"
                     data-bs-auto-close="outside" aria-expanded="false" id="sticker_bar_toggle_btn">

@@ -3,6 +3,8 @@
 
 class app_controller {
 
+    // B=button , C=container || box E=text || number element
+
     #message_box = document.getElementById('message_box')
 
     #text_area = document.getElementById('text_area')
@@ -49,6 +51,11 @@ class app_controller {
     #sharing_music_music = null
     #sharing_music_collection = null
 
+    #replay_message_id = null
+    #replay_message_text = null
+
+    // app music state !! ==============>
+
     #play_next_music_btn = document.getElementById('play_next_music_btn')
     #play_previous_music_btn = document.getElementById('play_previous_music_btn')
     #mix_music_btn = document.getElementById('mix_music_btn')
@@ -60,7 +67,12 @@ class app_controller {
     #music_search_input = document.getElementById('music_search_input')
     #player_current_music_index = document.getElementById('player_current_music_index')
     #player_total_music_index = document.getElementById('player_total_music_index')
-    // triple user
+    // message replay
+    #cansel_message_replay_B = document.getElementById('cansel_message_replay_B')
+    #message_replay_E = document.getElementById('message_replay_E')
+    #message_replay_C = document.getElementById('message_replay_C')
+
+
 
 
     constructor() {
@@ -74,16 +86,11 @@ class app_controller {
         this.#disconnect_couple_btn.addEventListener('click', () => this.disconnect())
 
 
-        this.#text_area.onkeyup = function (e) {
-            if (e.keyCode === 13) {
-                const message = document.getElementById('text_area').value
-                if (message.length < 2) return
-                Api_Controller.outgoing_data({
-                    message: message
-                })
-            }
-            return true;
-        }
+        this.#text_area.addEventListener('keyup', (e)=> {
+            if(e.keyCode == 13) this.send_message()
+        })
+
+
         // app games
         this.#end_jeirani_game_btn.addEventListener('click', () => this.#end_jeirani_game())
 
@@ -95,7 +102,8 @@ class app_controller {
         this.#cansel_music_player_btn.addEventListener('click', () => this.#cansel_music_player())
         this.#music_search_input.addEventListener('change', () => this.#search_music())
         this.#sharing_music_btn.addEventListener('click', () => this.#sharing_music())
-        // triple
+        // message replay
+        this.#cansel_message_replay_B.addEventListener('click', () => this.#cansel_message_replay())
 
     }
 
@@ -123,7 +131,6 @@ class app_controller {
     // rooms ================= START
 
     set_rooms_info(rooms) {
-        debugger
         rooms.forEach(room => {
             const count_E = document.getElementById(`count_${room.id}`)
             if(!count_E) return
@@ -427,8 +434,30 @@ class app_controller {
         this.#sticker_bar_toggle_btn.click()
     }
     // app actions ================= START
+    add_message_replay(id) {
+        const message = document.getElementById(id)
+        if(!message) return
+        let message_text = message.textContent.trim()
+        debugger
+        this.#replay_message_id = id
+        this.#replay_message_text = message_text
+        this.#message_replay_E.textContent = this.#cut_text(message_text)
+        this.#message_replay_C.style.display = 'block'
+    }
 
+    #cansel_message_replay() {
+        this.#replay_message_id = null
+        this.#replay_message_text = null
+        this.#message_replay_E.textContent = ''
+        this.#message_replay_C.style.display = 'none'
+        debugger
+    }
 
+    #cut_text(text) {
+        if(text.length > 37) {
+            return text.slice(0, 37) + '...' 
+        } else return text
+    }
 
     send_message() {
         const text_area = document.getElementById('text_area')
@@ -436,8 +465,11 @@ class app_controller {
         text_area.value = ''
         if (message.length < 2) return
         Api_Controller.outgoing_data({
-            message: message
+            message: message,
+            message_replay_id: this.#replay_message_id,
+            message_replay_text: this.#replay_message_text ,
         })
+        this.#cansel_message_replay()
     }
 
     start(user) {
@@ -545,6 +577,9 @@ class app_controller {
     }
 
     set_message_right(data) {
+        const id = data.id
+        const message_replay_id = data.message_replay_id
+        const message_replay_text = data.message_replay_text
         // user profile + vip
         const img = data.user_img
         const name = data.user_name
@@ -552,9 +587,6 @@ class app_controller {
         const message_icon = data.message_icon
         // message data
         this.#text_area.value = ''
-        const open_chat_request = data.open_chat_request
-        const open_chat_accept = data.open_chat_accept
-        const max_users = data.max_users
         const bot_danger = data.bot_danger
         const bot_success = data.bot_success
         const music = data.music
@@ -562,9 +594,9 @@ class app_controller {
         const sticker = data.sticker
         const disconnect = data.disconnect
         const connect = data.connect
-
         const message = data.message
         const item = document.createElement('div')
+        item.id = id
         item.className = 'd-flex align-items-center justify-content-end m-1 mb-2 '
         item.innerHTML = `
             <div 
@@ -598,7 +630,17 @@ class app_controller {
                         <img src="${sticker}" class="chat-sticker img-fluid"/>
                     </span>
                     ` : ''}
-                ${!sticker && message ? `<span class="text-start">${message}</span>` : ''}
+                ${!sticker && message ? `<span class="text-start">
+                    ${message_replay_text ? `<div class="text-start bg-secondary-subtle text-secondary p-1 px-2 rounded-1 border-0 border-secondary-subtle">
+                        <a href="#${message_replay_id}" class='redirect_message'>
+                            <small class='text-secondary'>
+                                ${message_replay_text}
+                            </small>
+                            <i class="bi bi-link-45deg text-secondary"></i>
+                        </a>
+                    </div>` : ''}
+                    ${message}
+                </span>` : ''}
      
                 ${bot_success ? `<i class="bi bi-robot m-1 text-success"></i>` : ''}
                 ${bot_danger ? `<i class="bi bi-robot m-1 text-danger"></i>` : ''}
@@ -620,22 +662,22 @@ class app_controller {
     }
 
     set_message_left(data) {
+        const id = data.id ?? 0
+        const message_replay_id = data.message_replay_id
+        const message_replay_text = data.message_replay_text
         // user profile + vip
         const img = data.user_img
         const name = data.user_name
         const message_styles = data.message_styles
         const message_icon = data.message_icon
         // message data
-        const id = Date.now()
         const bot_danger = data.bot_danger
         const bot_success = data.bot_success
         const open_chat_request = data.open_chat_request
-        const open_chat_accept = data.open_chat_accept
         const max_users = data.max_users
         const music = data.music
         const music_accept = data.music_accept
         const sticker = data.sticker
-        const disconnect = data.disconnect
         const connect = data.connect
         const message = data.message
         const item = document.createElement('div')
@@ -649,6 +691,7 @@ class app_controller {
                     alt="..."
                 >
             </div>
+           
             <div 
                 class="${sticker ? '' :  'alert alert-dark shadow_blue'} d-flex align-items-center justify-content-start  p-2 rounded-1 m-2 mt-0 mb-0"
                 style='${sticker ? '' : message_styles}'
@@ -671,7 +714,18 @@ class app_controller {
                         <img src="${sticker}" class="chat-sticker img-fluid" />
                     </span>
                     ` : ''}
-                ${!sticker && message ? `<span class="text-start">${message}</span>` : ''}
+                ${!sticker && message ? `<span class="text-start">
+                     ${message_replay_text ? `<div class="text-start bg-secondary-subtle text-secondary p-1 px-2 rounded-1 border-0 border-secondary-subtle">
+                        <a href="#${message_replay_id}" class='redirect_message'>
+                            <small class='text-secondary'>
+                                ${message_replay_text}
+                            </small>
+                            <i class="bi bi-link-45deg text-secondary"></i>
+                        </a>
+                     </div>` : ''}
+                    ${message}
+                </span>` : ''}
+                
                 ${music && music_accept === null ? `
                     <button type="button" class="btn-grad-black btn-grad-black-liner mx-1" onclick="App_Controller.accept_sharing_music(${id})">
                         <i class="bi bi-play-circle"></i>
@@ -688,12 +742,6 @@ class app_controller {
                         <i class="bi bi-x-octagon"></i>
                     </button>       
                 ` : ''}
-                ${disconnect ? `
-                    <button class="btn-grad-black btn-grad-black-liner me-2" onclick="find_couple()">
-                        ძიება
-                        <i class="bi bi-search-heart-fill"></i>
-                    </button>
-                ` : ''}
                 ${connect ? `
                     <span id="couple_name" class="m-2 mt-0 mb-0">
                         ${name ? name :
@@ -703,6 +751,9 @@ class app_controller {
                 }  
                 </span> ` : ''}
             </div>
+            </div>
+            ${!sticker && message && !message_replay_text ? `<i class="bi bi-reply-all-fill text-secondary" style="cursor: pointer;" onclick="App_Controller.add_message_replay(${id})"></i>` : ''}
+            
         `
 
 
