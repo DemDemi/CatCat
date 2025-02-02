@@ -438,7 +438,6 @@ class app_controller {
         const message = document.getElementById(id)
         if(!message) return
         let message_text = message.textContent.trim()
-        debugger
         this.#replay_message_id = id
         this.#replay_message_text = message_text
         this.#message_replay_E.textContent = this.#cut_text(message_text)
@@ -450,7 +449,6 @@ class app_controller {
         this.#replay_message_text = null
         this.#message_replay_E.textContent = ''
         this.#message_replay_C.style.display = 'none'
-        debugger
     }
 
     #cut_text(text) {
@@ -584,6 +582,8 @@ class app_controller {
         const img = data.user_img
         const name = data.user_name
         const message_styles = data.message_styles
+        const image_styles = data.image_styles
+        debugger
         const message_icon = data.message_icon
         // message data
         this.#text_area.value = ''
@@ -651,8 +651,9 @@ class app_controller {
             </div>
             <div class="text-center m-1 mt-0 mb-0">
                 <img 
+                    style="${image_styles ?? ''}"
                     src="${img}" 
-                    class="float-end message_img ${message_styles ? '' : 'rounded-circle'}" 
+                    class="float-start message_img ${image_styles ? '' : 'rounded-circle'}" 
                     alt="..."
                 >
             </div>
@@ -669,6 +670,8 @@ class app_controller {
         const img = data.user_img
         const name = data.user_name
         const message_styles = data.message_styles
+        const image_styles = data.image_styles
+        debugger
         const message_icon = data.message_icon
         // message data
         const bot_danger = data.bot_danger
@@ -685,9 +688,10 @@ class app_controller {
         item.className = 'd-flex align-items-center justify-content-start m-1 mb-2'
         item.innerHTML = `
             <div class="text-center m-1 mt-0 mb-0">
-                <img 
+                <img
+                    style="${image_styles ?? ''}"
                     src="${img}" 
-                    class="float-start message_img ${message_styles ? '' : 'rounded-circle'}" 
+                    class="float-start message_img ${image_styles ? '' : 'rounded-circle'}" 
                     alt="..."
                 >
             </div>
