@@ -1,7 +1,8 @@
 <div class="chat_container">
     <div id="message_replay_C" style="display: none;">
         <div class="d-flex align-items-center justify-content-end m-1">
-            <span class="mx-3 px-2 bg-black p-1 rounded-pill border border-secondary-subtle text-secondary-subtle bg-secondary-subtle">
+            <span
+                class="mx-3 px-2 bg-black p-1 rounded-pill border border-secondary-subtle text-secondary-subtle bg-secondary-subtle">
                 <i class="bi bi-reply-all-fill fs-6"></i>
                 <small id="message_replay_E">ეე კაი რა მესიჯი...</small>
                 <i class="bi bi-x-circle fs-6" style="cursor: pointer;" id="cansel_message_replay_B"></i>
@@ -17,40 +18,19 @@
                     data-bs-auto-close="outside" aria-expanded="false" id="sticker_bar_toggle_btn">
                     <i class="bi bi-emoji-wink"></i>
                 </button>
-                <div class="dropdown-menu stiker-dropdown">
-                    <nav class="m-2 mt-0 mb-0">
-                        <div class="nav nav-tabs p-0" id="nav-sticker-tab" role="tablist">
-                            <% stickers.forEach((collection, index )=> { %>
-                                <button class="nav-link p-1  <%= index == 0 ? 'active' : '' %>"
-                                    id="nav-sticker-tab-<%= index %>" data-bs-toggle="tab"
-                                    data-bs-target="#nav-sticker-<%= index %>" type="button" role="tab"
-                                    aria-selected="<%= index == 0 ? 'true' : 'false'  %>">
-                                    <img src="<%= collection[0]?.public_path ?? '' %>"
-                                        class="sticker-picker img-fluid" />
-                                </button>
-                                <% }) %>
-                        </div>
-                    </nav>
+                <div class="dropdown-menu p-0  stiker-dropdown">
+                    <div class="d-flex align-items-center justify-content-center bg-secondary-subtle p-1 border rounded-1"
+                        id="nav_sticker_tab">
 
-                    <div class="tab-content" id="nav-sticker-tab-content">
-                        <% stickers.forEach((collection, index )=> { %>
-                            <div class="tab-pane fade <%= index == 0 ? 'show active' : ''%>"
-                                id="nav-sticker-<%= index %>" role="tabpanel" tabindex="0">
-                                <div class="scrollspy-stickers-box p-2">
-                                    <div class="row m-0 p-0">
-                                        <% collection.forEach( sticker=> { %>
-                                            <div class="col-3 m-0 p-1 d-flex align-items-center justify-content-center rounded-3 sticker-item"
-                                                onclick="App_Controller.send_sticker(this.getAttribute('public_path'))"
-                                                public_path="<%= sticker.public_path %>">
-                                                <img src="<%= sticker.public_path %>"
-                                                    class="dropdown-sticker img-fluid" />
-                                            </div>
-                                            <% }) %>
-                                    </div>
-                                </div>
-                            </div>
-                            <% }) %>
                     </div>
+
+
+                    <div class="scrollspy-stickers-box p-2">
+                        <div class="row m-0 p-0" id="nav_sticker_tab_content">
+                            
+                        </div>
+                    </div>
+
                 </div>
 
                 <button class="btn-grad-black btn-grad-black-liner p-1" type="button" id="send_btn">

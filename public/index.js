@@ -1,6 +1,46 @@
 
 
 
+class app_state {
+
+    #API = document.getElementById('app_domain').value
+
+    #stickers = []
+
+    
+
+    get_all_stickers() {
+        return this.#stickers
+    }
+
+    get_stickers_collection(name) {
+        let target = []
+        this.#stickers.forEach(collection => {
+            if (collection.name == name) {
+                target = collection.collection
+            }
+        });
+        return target
+    }
+
+    async fetch_stickers() {
+        const res = await fetch(`${this.#API}/sticker`)
+        if (res.ok == false) {
+            this.#stickers = []
+            return
+        }
+        const json = await res.json()
+        this.#stickers = json
+    }
+
+}
+
+const App_State = new app_state()
+
+
+
+
+
 class app_controller {
 
     // B=button , C=container || box E=text || number element
@@ -23,9 +63,6 @@ class app_controller {
     #toggle_game_modal_btn = document.getElementById('toggle_game_modal_btn')
     #close_game_modal_btn = document.getElementById('close_game_modal_btn')
     #end_jeirani_game_btn = document.getElementById('end_jeirani_game_btn')
-    // app sticters
-    #sticker_bar_toggle_btn = document.getElementById('sticker_bar_toggle_btn')
-
     // block
     #connect_block = document.getElementById('connect_block')
     #loading_block = document.getElementById('loading_block')
@@ -72,8 +109,10 @@ class app_controller {
     #message_replay_E = document.getElementById('message_replay_E')
     #message_replay_C = document.getElementById('message_replay_C')
 
-
-
+    // footer stickers 
+    #sticker_bar_toggle_btn = document.getElementById('sticker_bar_toggle_btn')
+    #nav_sticker_tab = document.getElementById('nav_sticker_tab')
+    #nav_sticker_tab_content = document.getElementById('nav_sticker_tab_content')
 
     constructor() {
         // profile
@@ -86,8 +125,8 @@ class app_controller {
         this.#disconnect_couple_btn.addEventListener('click', () => this.disconnect())
 
 
-        this.#text_area.addEventListener('keyup', (e)=> {
-            if(e.keyCode == 13) this.send_message()
+        this.#text_area.addEventListener('keyup', (e) => {
+            if (e.keyCode == 13) this.send_message()
         })
 
 
@@ -105,7 +144,60 @@ class app_controller {
         // message replay
         this.#cansel_message_replay_B.addEventListener('click', () => this.#cansel_message_replay())
 
+
+        // render stickers
+        this.#sticker_bar_toggle_btn.addEventListener('click', () => this.#render_stickers_bar())
     }
+
+    // light dark
+    set_theme(variant) {
+        const body = document.getElementById('body')
+        if(variant) {
+            localStorage.setItem('app_theme', variant)
+            body.setAttribute('data-bs-theme', variant)
+        } else {
+            body.setAttribute('data-bs-theme', localStorage.getItem('app_theme'))
+        }
+    }
+
+    #render_stickers_bar() {
+        const data = App_State.get_all_stickers()
+        this.#nav_sticker_tab.innerHTML = ''
+        let first_collection_name = data[0]?.name ? data[0]?.name : null
+        data.forEach((collection, index) => {
+            const item = document.createElement('button')
+            item.className = `btn btn-outline-dark p-1 border-0 rounded-1 ${index == 0 ? 'active' : ''}`
+            item.setAttribute('collection_name', collection.name)
+            item.onclick = () => App_Controller.render_stickers_collection(item.getAttribute('collection_name'))
+            item.innerHTML = `
+                <img 
+                    src="${collection.preview.public_path ?? ''}"
+                    class="sticker-picker img-fluid"
+                />
+            `
+            this.#nav_sticker_tab.appendChild(item)
+        });
+        this.render_stickers_collection(first_collection_name)
+    }
+
+    render_stickers_collection(name) {
+        const collection = App_State.get_stickers_collection(name)
+        this.#nav_sticker_tab_content.innerHTML = ''
+        collection.forEach((sticker) => {
+            const item = document.createElement('div')
+            item.className = "col-3 m-0 p-1 d-flex align-items-center justify-content-center rounded-3 sticker-item"
+            item.setAttribute('public_path', sticker.public_path)
+            item.onclick = () => App_Controller.send_sticker(item.getAttribute('public_path'))
+            item.innerHTML = `
+                <img 
+                    src="${sticker.public_path}"
+                    class="dropdown-sticker img-fluid"
+                />
+            `
+            this.#nav_sticker_tab_content.appendChild(item)
+        });
+    }
+
 
     // app info ===================
 
@@ -133,7 +225,7 @@ class app_controller {
     set_rooms_info(rooms) {
         rooms.forEach(room => {
             const count_E = document.getElementById(`count_${room.id}`)
-            if(!count_E) return
+            if (!count_E) return
             count_E.textContent = `${room.users_count}/${room.users_max_count}`
         });
     }
@@ -436,7 +528,7 @@ class app_controller {
     // app actions ================= START
     add_message_replay(id) {
         const message = document.getElementById(id)
-        if(!message) return
+        if (!message) return
         let message_text = message.textContent.trim()
         this.#replay_message_id = id
         this.#replay_message_text = message_text
@@ -452,8 +544,8 @@ class app_controller {
     }
 
     #cut_text(text) {
-        if(text.length > 37) {
-            return text.slice(0, 37) + '...' 
+        if (text.length > 37) {
+            return text.slice(0, 37) + '...'
         } else return text
     }
 
@@ -465,7 +557,7 @@ class app_controller {
         Api_Controller.outgoing_data({
             message: message,
             message_replay_id: this.#replay_message_id,
-            message_replay_text: this.#replay_message_text ,
+            message_replay_text: this.#replay_message_text,
         })
         this.#cansel_message_replay()
     }
@@ -564,7 +656,7 @@ class app_controller {
         const item = document.createElement('div')
         item.className = 'text-center w-100  d-flex align-items-center justify-content-center'
         item.innerHTML = `
-            <div class="alert alert-dark shadow_blue d-flex align-items-center justify-content-center message-center p-2 rounded-1 m-3" role="alert">
+            <div class="alert alert-dark d-flex align-items-center justify-content-center  p-2 px-3 rounded-pill message-center" role="alert">
                 ${bot_success ? `<i class="bi bi-robot m-1 text-success"></i>` : ''}
                 ${bot_danger ? `<i class="bi bi-robot m-1 text-danger"></i>` : ''}
                 ${message}
@@ -600,7 +692,7 @@ class app_controller {
         item.className = 'd-flex align-items-center justify-content-end m-1 mb-2 '
         item.innerHTML = `
             <div 
-                class=" ${sticker ? '' : 'alert alert-dark shadow_blue'} d-flex align-items-center justify-content-end  p-2 rounded-1 m-2 mt-0 mb-0" 
+                class=" ${sticker ? '' : 'alert bg-secondary-subtle message'} d-flex align-items-center justify-content-end rounded-start-pill rounded-end m-0 p-2 px-3 mx-2" 
                 style='${sticker ? '' : message_styles}'
                 role="alert"
             >
@@ -609,8 +701,6 @@ class app_controller {
                         <img  src='${message_icon}' class="message_icon ">
                     </span>  
                 ` : ''}
-             
-
                 ${connect ? `
                     <span id="couple_name" class="m-2 mt-0 mb-0">
                         ${name ? name :
@@ -697,7 +787,7 @@ class app_controller {
             </div>
            
             <div 
-                class="${sticker ? '' :  'alert alert-dark shadow_blue'} d-flex align-items-center justify-content-start  p-2 rounded-1 m-2 mt-0 mb-0"
+                class="${sticker ? '' : 'alert alert-dark message'} d-flex align-items-center justify-content-start rounded-end-pill rounded-start m-0 p-2 px-3 mx-2"
                 style='${sticker ? '' : message_styles}'
                 role="alert" 
             >
@@ -771,14 +861,25 @@ const App_Controller = new app_controller()
 
 
 
+
+
+
+
+
 class api_controller {
 
     #connect = false
 
     incoming_data(soket) {
         soket.on('message', (data) => {
-            if(data.rooms_info) App_Controller.set_rooms_info(data.rooms)
-            if (data.user) App_Controller.start(data)
+            if (data.user) {
+                App_State.fetch_stickers()
+                App_Controller.start(data)
+            }
+
+
+
+            if (data.rooms_info) App_Controller.set_rooms_info(data.rooms)
             if (data.jeirani == false) {
                 App_Controller.close_games_modal()
             }

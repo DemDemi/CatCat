@@ -7,6 +7,20 @@ import { Stickers_Service } from "../services/stickers.js"
 class Stickers_controller {
 
 
+    async get_collections(req, res) {
+        try {
+            const stickers = await Stickers_Service.get_collections()
+            res.status(200).send(
+                JSON.stringify(stickers)
+            );
+        } catch (error) {
+            console.log(error)
+            res.status(404).send('File fund');
+        }
+
+    }
+
+
     async upload(req, res) {
         try {
             if(process.env.SECRET != req.body.token) {

@@ -6,12 +6,30 @@ import USERS_SERVICE from '../services/users.js';
 class Users_Controller {
 
 
+    #sticker_senders = []
 
+    constructor() {
+        setInterval( ()=> {
+            this.#sticker_senders = []
+        }, 30000 )
+    }
 
+    set_ip(ip) {
+        this.#sticker_senders.push(ip)
+    }
+
+    is_spam(ip) {
+        let count = this.#sticker_senders.filter(  sip => sip == ip ).length
+        console.log(count)
+        if(count >= 4) {
+            console.log(this.#sticker_senders)
+            return true
+           
+        } else return false
+    } 
 
     validate(socket) {
         const ip = socket.handshake.address
-        
         this.find_or_create(socket)
         USERS_SERVICE.send_rooms()
         USERS_SERVICE.send_users_count()
@@ -38,7 +56,12 @@ class Users_Controller {
                     message_replay_text: data.message_replay_text,
                 })
             } 
-            if (data.sticker) USERS_SERVICE.send_sticker(socket.id, data.public_path)
+            if (data.sticker) {
+                this.set_ip(ip)
+                if(!this.is_spam(ip)) {
+                    USERS_SERVICE.send_sticker(socket.id, data.public_path)
+                } 
+            } 
             if (data.offline) USERS_SERVICE.set_user_offline(socket.id)
             if (data.online) USERS_SERVICE.set_user_online(socket.id)
             if(data.room) {

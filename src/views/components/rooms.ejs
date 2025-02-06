@@ -3,7 +3,7 @@
 
     <div class="d-flex align-items-center justify-content-center">
         <% rooms.forEach(room=> { %>
-            <button id="<%= room.id %>" class="btn-grad-black btn-grad-black-liner m-2 position-relative"
+            <button id="<%= room.id %>" class="btn btn-dark rounded-1 m-2 position-relative"
                 onclick="App_Controller.connect_to_room(this.id)">
                 <span class="position-absolute top-0 start-50 translate-middle badge rounded-pill bg-secondary-subtle">
                     <small id="count_<%= room.id %>" class="fw-normal text-secondary-emphasis">

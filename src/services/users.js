@@ -908,7 +908,7 @@ class User {
         { name: 'Lelouch', img: './static/vip_profiles/Lelouch.png', image_styles: null, message_icon: './static/vip_profiles/icons/Geass.png', message_styles: 'border-right: #662d91b8 solid 3px;border-left: #662d91b8 solid 3px;border-top: #662d91b8 solid 1px;border-bottom: none;box-shadow: none;border-radius: 50px !important;background-color: #662d911f;color: #fddcdc;' },
         { name: 'Ani', img: './static/vip_profiles/Bad_girl.png', image_styles: null, message_icon: null, message_styles: 'border-right: #35374B solid 3px;border-left: #35374B solid 3px;border-top: none;border-bottom: none;box-shadow: none;border-radius: 25px !important;background-color: transparent;' },
         { name: 'Hot', img: './static/vip_profiles/Hot.png', image_styles: null, message_icon: null, message_styles: 'border-right: none;border-left: #940B92 solid 2px;border-top: none;border-bottom: none;box-shadow: none;border-radius: 0px 20px 0px 20px !important;background-color: #7a1cac1a;color: #ddcde6;' },
-        { name: 'Ana', img: './static/vip_profiles/Queen.png', image_styles: null, message_icon: './static/vip_profiles/icons/Tamaris_drosha.png', message_styles: 'border-right: #FFD7008A solid 2px;border-left: #FFD7008A solid 2px;border-top: #FFD7008A solid 1px;border-bottom: none;box-shadow: none;border-radius: 5px 5px 15px 15px !important;background-color: #ffef9617;color: #ffd9d9;' },
+        { name: 'AnaD', img: './static/vip_profiles/Queen.png', image_styles: null, message_icon: './static/vip_profiles/icons/Tamaris_drosha.png', message_styles: 'border-right: #FFD7008A solid 2px;border-left: #FFD7008A solid 2px;border-top: #FFD7008A solid 1px;border-bottom: none;box-shadow: none;border-radius: 5px 5px 15px 15px !important;background-color: #ffef9617;color: #ffd9d9;' },
         { name: 'Cat', img: './static/vip_profiles/Cat.png', image_styles: null, message_icon: './static/vip_profiles/icons/green_eyes.png', message_styles: 'border-right: #316629 solid 2px;border-left: #316629 solid 2px;border-top: none;border-bottom: none;box-shadow: none;border-radius: 10px 20px 10px 20px !important;background-color: #545B6F47;color: #FFE5FC;' },
         { name: 'Jhon', img: './static/vip_profiles/john_wick_2.png', image_styles: null, message_icon: './static/vip_profiles/icons/gun.png', message_styles: 'border-bottom: none;border-top: none;border-left: #a30d46 double 4px;box-shadow: none;border-radius: 0px 10px 0px 10px !important;color: #b5b5b5;border-right: #a30d46 double 4px;' },
         { name: 'muz', img: './static/vip_profiles/hack.jpg', image_styles: null, message_icon: './static/vip_profiles/icons/hacked.png', message_styles: 'border-bottom: none;border-top: none;border-left: #011418 double 5px;box-shadow: none;border-radius: 0px 15px 15px 0px !important;color: #def3ff;border-right: #0a2b39 double 4px;background: rgb(0,82,98);background: linear-gradient(90deg, rgba(0, 82, 98, 0.25) 0%, rgba(159, 10, 60, 0.15) 37%, rgba(5, 0, 96, 0.08) 80%);' },
@@ -931,6 +931,13 @@ class User {
             message_icon: './static/vip_profiles/icons/Marr_icon.png',
             image_styles: 'border-radius: 20px;box-shadow: 0px 0px 5px 1px rgba(98,154,202,1);',
             message_styles: 'border-bottom: #18405c double 3px;border-top: none;border-left: #31415a dotted 2px;box-shadow: none;border-radius: 5px 5px 25px 25px !important;color: #b5ddff;border-right: #31415a dotted 2px;background-image: url("./static/vip_profiles/icons/Marr_bg.jpg");background-position: center;background-size: cover;box-shadow: 0px -2px 9px -1px rgb(133, 171, 230);'
+        },
+        { 
+            name: 'Nodaxe', 
+            img: './static/vip_profiles/Ragnar.png', 
+            message_icon: './static/vip_profiles/icons/Ragnar_icon.png',
+            image_styles: null,
+            message_styles: 'border-bottom: #777 double 3px;border-top: none;border-left: #777 double 3px;box-shadow: none;border-radius: 10px !important;color: #ffd8d1;border-right: #777 double 3px;background-image: url("./static/vip_profiles/icons/Ragnar_bg.jpg");background-position: center;background-size: cover;box-shadow: 0px -2px 9px -1px rgb(102, 29, 21);'
         },
     ]
 

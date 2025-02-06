@@ -38,13 +38,14 @@ class Stickers_service {
         }
     }
 
-    async get_stickers(passcode) {
+
+    async get_collections() {
         try {
             let stickers = []
             let folder_names = await this.get_sticker_folder_names()
 
             for (let i = 0; i < folder_names.length; i++) {
-                if(passcode != 'Demi' && folder_names[i] == 'J') continue
+                const name = folder_names[i]
                 const dir = path.join(stickers_path, folder_names[i])
                 const sticker_names = await this.get_sticker_names(dir)
                 let collection = []
@@ -53,13 +54,16 @@ class Stickers_service {
                         public_path: path.join(public_stickers_path, folder_names[i], sticker_name)
                     })
                 });
-                stickers.push(collection)
+                stickers.push({
+                    name: name,
+                    preview: collection[0] ?? null,
+                    collection: collection
+                })
             }
             return stickers
         } catch (error) {
             console.log(error)
         }
-
     }
 
     get_sticker_names(dir) {
@@ -77,6 +81,31 @@ class Stickers_service {
             console.log(error)
         }
     }
+
+    async get_stickers() {
+        try {
+            let stickers = []
+            let folder_names = await this.get_sticker_folder_names()
+
+            for (let i = 0; i < folder_names.length; i++) {
+                const dir = path.join(stickers_path, folder_names[i])
+                const sticker_names = await this.get_sticker_names(dir)
+                let collection = []
+                sticker_names.forEach(sticker_name => {
+                    collection.push({
+                        public_path: path.join(public_stickers_path, folder_names[i], sticker_name)
+                    })
+                });
+                stickers.push(collection)
+            }
+            return stickers
+        } catch (error) {
+            console.log(error)
+        }
+
+    }
+
+
 
 
 

@@ -9,6 +9,9 @@ const router = new Router()
 
 router.get('/',  Index_Controller.index)
 
+
+router.get('/sticker', Stickers_Controller.get_collections)
+
 router.post('/music/upload_mp3',  Music_Controller.upload_mp3)
 router.post('/music/upload_poster',  Music_Controller.upload_poster)
 router.post('/music/delete',  Music_Controller.delete)
