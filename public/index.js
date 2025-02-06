@@ -24,7 +24,7 @@ class app_state {
     }
 
     async fetch_stickers() {
-        const res = await fetch(`${this.#API}/sticker`)
+        const res = await fetch(`https://catcat.ge/sticker`)
         if (res.ok == false) {
             this.#stickers = []
             return
